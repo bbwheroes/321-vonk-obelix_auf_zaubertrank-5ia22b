@@ -1,6 +1,6 @@
 package ch.bbw.obelix.quarry.service;
 
-import ch.bbw.obelix.quarry.api.repository.MenhirRepository;
+import ch.bbw.obelix.quarry.repository.MenhirRepository;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.stereotype.Service;

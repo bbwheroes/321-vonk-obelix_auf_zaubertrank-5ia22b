@@ -2,8 +2,8 @@ package ch.bbw.obelix.quarry.controller;
 
 import ch.bbw.obelix.quarry.api.QuarryApi;
 import ch.bbw.obelix.quarry.api.dto.MenhirDto;
-import ch.bbw.obelix.quarry.api.entity.MenhirEntity;
-import ch.bbw.obelix.quarry.api.repository.MenhirRepository;
+import ch.bbw.obelix.quarry.entity.MenhirEntity;
+import ch.bbw.obelix.quarry.repository.MenhirRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.StandardException;
 import org.springframework.http.HttpStatus;
