@@ -33,6 +33,22 @@ public class QuarryController implements QuarryApi {
     }
 
     @Override
+    public MenhirDto createMenhir(MenhirDto menhirDto) {
+        MenhirEntity entity = MenhirEntity.fromDto(menhirDto);
+        MenhirEntity saved = menhirRepository.save(entity);
+        return saved.toDto();
+    }
+
+    @Override
+    public MenhirDto updateMenhir(UUID menhirId, MenhirDto menhirDto) {
+        MenhirEntity existing = menhirRepository.findById(menhirId)
+                .orElseThrow(() -> new UnknownMenhirException("unknown menhir with id " + menhirId));
+        existing.updateFromDto(menhirDto);
+        MenhirEntity saved = menhirRepository.save(existing);
+        return saved.toDto();
+    }
+
+    @Override
     public void deleteById(UUID menhirId) {
         menhirRepository.deleteById(menhirId);
     }

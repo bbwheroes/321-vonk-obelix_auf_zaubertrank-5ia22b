@@ -45,8 +45,24 @@ public class MenhirEntity {
 
 	// should be replaced by a mapper like https://mapstruct.org/ but this is simpler for now
 	public MenhirDto toDto() {
-		return new MenhirDto(getId(), getWeight(), getStoneType(), getDecorativeness().toDto(), getDescription());
-	}
+        return new MenhirDto(getId(), getWeight(), getStoneType(), getDecorativeness().toDto(), getDescription());
+    }
+
+    public static MenhirEntity fromDto(MenhirDto dto) {
+        MenhirEntity entity = new MenhirEntity();
+        entity.setWeight(dto.weight());
+        entity.setStoneType(dto.stoneType());
+        entity.setDecorativeness(Decorativeness.fromDto(dto.decorativeness()));
+        entity.setDescription(dto.description());
+        return entity;
+    }
+
+    public void updateFromDto(MenhirDto dto) {
+        this.weight = dto.weight();
+        this.stoneType = dto.stoneType();
+        this.decorativeness = Decorativeness.fromDto(dto.decorativeness());
+        this.description = dto.description();
+    }
 
 	public enum Decorativeness {
 		PLAIN, SIMPLE, DECORATED, ORNATE, MASTERWORK;
