@@ -1,0 +1,66 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8082
+  description: Generated server url
+paths:
+  /api/basket/buy/{menhirId}:
+    post:
+      tags:
+      - basket-controller
+      operationId: exchangeFor
+      parameters:
+      - name: menhirId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+  /api/basket/offer:
+    get:
+      tags:
+      - basket-controller
+      operationId: offer
+      parameters:
+      - name: basketItem
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/BasketItem"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BasketDto"
+  /api/basket:
+    delete:
+      tags:
+      - basket-controller
+      operationId: leave
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    BasketItem:
+      type: object
+      properties:
+        name:
+          type: string
+        count:
+          type: integer
+          format: int32
+    BasketDto:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/BasketItem"

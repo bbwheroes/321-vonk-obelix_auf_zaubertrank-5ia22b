@@ -1,0 +1,79 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8081
+  description: Generated server url
+paths:
+  /api/menhirs:
+    get:
+      tags:
+      - quarry-controller
+      operationId: getAllMenhirs
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MenhirDto"
+  /api/menhirs/{menhirId}:
+    get:
+      tags:
+      - quarry-controller
+      operationId: getMenhirById
+      parameters:
+      - name: menhirId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MenhirDto"
+  /api/quarry/{menhirId}:
+    delete:
+      tags:
+      - quarry-controller
+      operationId: deleteById
+      parameters:
+      - name: menhirId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    MenhirDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        weight:
+          type: number
+          format: double
+        stoneType:
+          type: string
+        decorativeness:
+          type: string
+          enum:
+          - PLAIN
+          - SIMPLE
+          - DECORATED
+          - ORNATE
+          - MASTERWORK
+        description:
+          type: string
