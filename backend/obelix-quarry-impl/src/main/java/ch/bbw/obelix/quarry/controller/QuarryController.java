@@ -29,7 +29,17 @@ public class QuarryController implements QuarryApi {
     public MenhirDto getMenhirById(UUID menhirId) {
         return menhirRepository.findById(menhirId)
                 .map(MenhirEntity::toDto)
-                .orElseThrow(() -> new UnknownMenhirException("unknwon menhir with id " + menhirId));
+                .orElseThrow(() -> new UnknownMenhirException("unknown menhir with id " + menhirId));
+    }
+
+    @Override
+    public MenhirDto createMenhir(MenhirDto menhirDto) {
+        MenhirEntity entity = new MenhirEntity();
+        entity.setWeight(menhirDto.weight());
+        entity.setStoneType(menhirDto.stoneType());
+        entity.setDecorativeness(MenhirEntity.Decorativeness.fromDto(menhirDto.decorativeness()));
+        entity.setDescription(menhirDto.description());
+        return menhirRepository.save(entity).toDto();
     }
 
     @Override
