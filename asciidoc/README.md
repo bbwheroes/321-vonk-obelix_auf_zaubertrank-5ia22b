@@ -60,7 +60,11 @@
   
 [See more](https://docs.arc42.org/section-8)
 
-## 09 Concepts
+## 09 Achitecture Decisions
+*Backend Team + Frontend Team*
+- Wichtige technische Entscheidungen
+- Begründungen und Alternativen
+
   
 [See more](https://docs.arc42.org/section-9)
 
