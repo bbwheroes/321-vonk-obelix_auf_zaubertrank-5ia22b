@@ -60,6 +60,10 @@
   
 [See more](https://docs.arc42.org/section-8)
 
+## 09 Concepts
+  
+[See more](https://docs.arc42.org/section-9)
+
 ## 10 Quality Requirements
 *Alle Teams (ohne Docs Team)*
 - Frontend: Performance, UX
