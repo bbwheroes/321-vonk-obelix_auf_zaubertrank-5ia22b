@@ -4,6 +4,10 @@ import { ref } from 'vue'
 defineProps({
     imageUrl: {
         type: String
+    },
+    displayText: {
+        type: String,
+        default: 'Default Menhir'
     }
 });
 
@@ -15,15 +19,48 @@ const decrease = () => {
 </script>
 
 <template>
-    <img :src="imageUrl" alt="Basket Item" width="200" />
-    <div class="item-count">
-        <button @click="decrease">-</button>
-        <div>{{ itemCount }}</div>
-        <button @click="itemCount++">+</button>
+    <div class="item">
+        <div class="left">
+            <div>{{ displayText }}</div>
+            <div class="item-count">
+                <button @click="decrease">-</button>
+                <div>{{ itemCount }}</div>
+                <button @click="itemCount++">+</button>
+            </div>
+        </div>
+        <img :src="imageUrl" alt="Basket Item" />
     </div>
 </template>
 
 <style scoped>
+
+.item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+
+    padding: 10px;
+    border-radius: 10px;
+    background-color: hsla(0, 0%, 0%, 0.05);
+
+    font-size: 130%
+}
+
+.item .left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.item img {
+    width: 100px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 7px;
+}
+
 .item-count {
     display: flex;
     align-items: center;
