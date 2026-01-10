@@ -1,4 +1,22 @@
-<script>
+<template>
+  <v-app>
+    <v-main class="pa-6">
+      <div style="width: 25%; margin-left: 75%; padding: 2%; background-color: hsla(0, 0%, 0%, 0.05);">
+        <div 
+          v-for="(item, index) in menhirImages" 
+          :key="index" 
+          :id="`menhir-${index + 1}`"
+        >
+          <BasketItem :imageUrl="item.url" />
+        </div>
+      </div>
+    </v-main>
+  </v-app>
+</template>
+
+<script setup>
+import BasketItem from '../components/BasketItem.vue';
+
 const menhirImages = [
   {
     id: 1,
@@ -21,24 +39,4 @@ const menhirImages = [
     url: `https://www.worldhistory.org/uploads/images/17698.jpeg`
   }
 ];
-</script>
-
-<template>
-  <v-app>
-    <v-main class="pa-6">
-      <div 
-        v-for="(item, index) in menhirImages" 
-        :key="index" 
-        :id="`menhir-${index + 1}`"
-      >
-        <BasketItem :imageUrl="item.url" />
-      </div>
-    </v-main>
-  </v-app>
-</template>
-
-<script setup>
-import Card from '../components/Card.vue'
-import BasketItem from '../components/BasketItem.vue';
-import { id } from 'vuetify/locale';
 </script>
