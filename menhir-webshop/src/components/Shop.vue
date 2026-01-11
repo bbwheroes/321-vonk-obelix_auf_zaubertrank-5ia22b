@@ -1,18 +1,14 @@
 <template>
   <v-container>
     <v-row>
-      <v-col
-        v-for="(item, index) in items"
-        :key="index"
-        cols="12"
-        md="4"
-      >
+      <v-col v-for="item in items" :key="item.id" cols="12" md="4">
         <Card
           :title="item.title"
           :subtitle="item.subtitle"
           :description="item.description"
           :image="item.image"
           :buttonText="item.buttonText"
+          @add-to-cart="onAdd(item)"
         />
       </v-col>
     </v-row>
@@ -22,8 +18,20 @@
 <script setup>
 import Card from './Card.vue'
 
+const emit = defineEmits(['add-to-cart'])
+
+function onAdd(item) {
+  // send only what cart needs
+  emit('add-to-cart', {
+    id: item.id,
+    title: item.title,
+    image: item.image,
+  })
+}
+
 const items = [
   {
+    id: 1,
     title: 'Top western road trips',
     subtitle: '1,000 miles of wonder',
     image: 'https://cdn.vuetifyjs.com/images/cards/sunshine.jpg',
@@ -31,6 +39,7 @@ const items = [
     buttonText: 'Add to cart',
   },
   {
+    id: 2,
     title: 'Mountain escape',
     subtitle: 'Fresh air guaranteed',
     image: 'https://cdn.vuetifyjs.com/images/cards/mountain.jpg',
@@ -38,6 +47,7 @@ const items = [
     buttonText: 'Add to cart',
   },
   {
+    id: 3,
     title: 'Desert adventure',
     subtitle: 'Heat, dust, glory',
     image: 'https://cdn.vuetifyjs.com/images/cards/desert.jpg',
@@ -45,6 +55,7 @@ const items = [
     buttonText: 'Add to cart',
   },
   {
+    id: 4,
     title: 'Forest retreat',
     subtitle: 'Silence and pine trees',
     image: 'https://cdn.vuetifyjs.com/images/cards/forest.jpg',
@@ -52,6 +63,7 @@ const items = [
     buttonText: 'Add to cart',
   },
   {
+    id: 5,
     title: 'Coastal drive',
     subtitle: 'Cliffs, waves, freedom',
     image: 'https://cdn.vuetifyjs.com/images/cards/road.jpg',
@@ -59,6 +71,7 @@ const items = [
     buttonText: 'Add to cart',
   },
   {
+    id: 6,
     title: 'City lights',
     subtitle: 'Never sleeps',
     image: 'https://cdn.vuetifyjs.com/images/cards/city.jpg',
@@ -66,6 +79,7 @@ const items = [
     buttonText: 'Add to cart',
   },
   {
+    id: 7,
     title: 'Snowy peaks',
     subtitle: 'Cold air, clear mind',
     image: 'https://cdn.vuetifyjs.com/images/cards/snow.jpg',
@@ -73,6 +87,7 @@ const items = [
     buttonText: 'Add to cart',
   },
   {
+    id: 8,
     title: 'Lakeside calm',
     subtitle: 'Still water, slow days',
     image: 'https://cdn.vuetifyjs.com/images/cards/lake.jpg',
@@ -80,6 +95,7 @@ const items = [
     buttonText: 'Add to cart',
   },
   {
+    id: 9,
     title: 'Countryside ride',
     subtitle: 'Back roads only',
     image: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',

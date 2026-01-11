@@ -6,12 +6,11 @@
     <v-card-subtitle>{{ props.subtitle }}</v-card-subtitle>
 
     <v-card-actions>
-      <v-btn color="orange-lighten-2" :text="props.buttonText" />
+      <v-btn color="orange-lighten-2" :text="props.buttonText" @click="emit('add-to-cart')" />
+
       <v-spacer />
-      <v-btn
-        :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-        @click="show = !show"
-      />
+
+      <v-btn :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'" @click="show = !show" />
     </v-card-actions>
 
     <v-expand-transition>
@@ -25,6 +24,8 @@
 
 <script setup>
 import { ref } from 'vue'
+
+const emit = defineEmits(['add-to-cart'])
 
 const props = defineProps({
   title: String,
