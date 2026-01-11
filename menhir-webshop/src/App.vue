@@ -35,25 +35,24 @@
 
     <v-main>
       <v-container class="pa-6">
-        <UserView @add-to-cart="onAddToCart" />
+        <router-view @add-to-cart="onAddToCart" />
       </v-container>
     </v-main>
   </v-app>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useCartStore } from './stores/cart'
+import { ref } from "vue";
+import { useCartStore } from "./stores/cart";
 
-import UserView from './views/UserView.vue'
-import BasketItem from './components/BasketItem.vue'
-import Checkout from './components/Checkout.vue'
+import BasketItem from "./components/BasketItem.vue";
+import Checkout from "./components/Checkout.vue";
 
-const drawer = ref(false)
-const cart = useCartStore()
+const drawer = ref(false);
+const cart = useCartStore();
 
 function onAddToCart(product) {
-  cart.add(product)
-  drawer.value = true
+  cart.add(product);
+  drawer.value = true;
 }
 </script>
