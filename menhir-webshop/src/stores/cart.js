@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 
 export const useCartStore = defineStore('cart', {
   state: () => ({
-    // { [id]: { id, title, image, qty } }
     itemsById: {},
   }),
 
@@ -27,6 +26,7 @@ export const useCartStore = defineStore('cart', {
           id: product.id,
           title: product.title,
           image: product.image,
+          value: product.value ?? 0,
           qty: 1,
         }
       }
@@ -43,6 +43,10 @@ export const useCartStore = defineStore('cart', {
       if (!item) return
       item.qty -= 1
       if (item.qty <= 0) delete this.itemsById[id]
+    },
+
+    clear() {
+      this.itemsById = {}
     },
   },
 })

@@ -16,91 +16,101 @@
 </template>
 
 <script setup>
-import Card from './Card.vue'
+import Card from "./Card.vue";
 
-const emit = defineEmits(['add-to-cart'])
+const emit = defineEmits(["add-to-cart"]);
 
 function onAdd(item) {
-  // send only what cart needs
-  emit('add-to-cart', {
+  emit("add-to-cart", {
     id: item.id,
     title: item.title,
     image: item.image,
-  })
+    value: item.value,
+  });
 }
 
 const items = [
   {
     id: 1,
-    title: 'Top western road trips',
-    subtitle: '1,000 miles of wonder',
-    image: 'https://cdn.vuetifyjs.com/images/cards/sunshine.jpg',
-    description: 'I’m a thing. But, like most politicians, he promised more than he could deliver.',
-    buttonText: 'Add to cart',
+    title: "Top western road trips",
+    subtitle: "1,000 miles of wonder",
+    value: 14,
+    image: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
+    description:
+      "I’m a thing. But, like most politicians, he promised more than he could deliver.",
+    buttonText: "Add to cart",
   },
   {
     id: 2,
-    title: 'Mountain escape',
-    subtitle: 'Fresh air guaranteed',
-    image: 'https://cdn.vuetifyjs.com/images/cards/mountain.jpg',
-    description: 'You won’t have time for sleeping, soldier.',
-    buttonText: 'Add to cart',
+    title: "Mountain escape",
+    subtitle: "Fresh air guaranteed",
+    value: 9,
+    image: "https://cdn.vuetifyjs.com/images/cards/mountain.jpg",
+    description: "You won’t have time for sleeping, soldier.",
+    buttonText: "Add to cart",
   },
   {
     id: 3,
-    title: 'Desert adventure',
-    subtitle: 'Heat, dust, glory',
-    image: 'https://cdn.vuetifyjs.com/images/cards/desert.jpg',
-    description: 'Then we’ll go with that data file!',
-    buttonText: 'Add to cart',
+    title: "Desert adventure",
+    subtitle: "Heat, dust, glory",
+    value: 11,
+    image: "https://cdn.vuetifyjs.com/images/cards/desert.jpg",
+    description: "Then we’ll go with that data file!",
+    buttonText: "Add to cart",
   },
   {
     id: 4,
-    title: 'Forest retreat',
-    subtitle: 'Silence and pine trees',
-    image: 'https://cdn.vuetifyjs.com/images/cards/forest.jpg',
-    description: 'Sometimes the best plan is no plan at all.',
-    buttonText: 'Add to cart',
+    title: "Forest retreat",
+    subtitle: "Silence and pine trees",
+    value: 7,
+    image: "https://cdn.vuetifyjs.com/images/cards/forest.jpg",
+    description: "Sometimes the best plan is no plan at all.",
+    buttonText: "Add to cart",
   },
   {
     id: 5,
-    title: 'Coastal drive',
-    subtitle: 'Cliffs, waves, freedom',
-    image: 'https://cdn.vuetifyjs.com/images/cards/road.jpg',
-    description: 'Every turn comes with a view worth stopping for.',
-    buttonText: 'Add to cart',
+    title: "Coastal drive",
+    subtitle: "Cliffs, waves, freedom",
+    value: 10,
+    image: "https://cdn.vuetifyjs.com/images/cards/road.jpg",
+    description: "Every turn comes with a view worth stopping for.",
+    buttonText: "Add to cart",
   },
   {
     id: 6,
-    title: 'City lights',
-    subtitle: 'Never sleeps',
-    image: 'https://cdn.vuetifyjs.com/images/cards/city.jpg',
-    description: 'Concrete, neon, and endless stories.',
-    buttonText: 'Add to cart',
+    title: "City lights",
+    subtitle: "Never sleeps",
+    value: 8,
+    image: "https://cdn.vuetifyjs.com/images/cards/city.jpg",
+    description: "Concrete, neon, and endless stories.",
+    buttonText: "Add to cart",
   },
   {
     id: 7,
-    title: 'Snowy peaks',
-    subtitle: 'Cold air, clear mind',
-    image: 'https://cdn.vuetifyjs.com/images/cards/snow.jpg',
-    description: 'Up here, everything feels simpler.',
-    buttonText: 'Add to cart',
+    title: "Snowy peaks",
+    subtitle: "Cold air, clear mind",
+    value: 12,
+    image: "https://cdn.vuetifyjs.com/images/cards/snow.jpg",
+    description: "Up here, everything feels simpler.",
+    buttonText: "Add to cart",
   },
   {
     id: 8,
-    title: 'Lakeside calm',
-    subtitle: 'Still water, slow days',
-    image: 'https://cdn.vuetifyjs.com/images/cards/lake.jpg',
-    description: 'Time moves differently by the water.',
-    buttonText: 'Add to cart',
+    title: "Lakeside calm",
+    subtitle: "Still water, slow days",
+    value: 6,
+    image: "https://cdn.vuetifyjs.com/images/cards/lake.jpg",
+    description: "Time moves differently by the water.",
+    buttonText: "Add to cart",
   },
   {
     id: 9,
-    title: 'Countryside ride',
-    subtitle: 'Back roads only',
-    image: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-    description: 'Sometimes the long way around is the point.',
-    buttonText: 'Add to cart',
+    title: "Countryside ride",
+    subtitle: "Back roads only",
+    value: 5,
+    image: "https://cdn.vuetifyjs.com/images/cards/house.jpg",
+    description: "Sometimes the long way around is the point.",
+    buttonText: "Add to cart",
   },
-]
+];
 </script>
