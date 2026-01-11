@@ -19,11 +19,17 @@
           @dec="cart.dec(item.id)" />
       </v-list>
 
-      <v-divider class="my-2" />
+      <v-spacer />
 
-      <div class="pa-4 d-flex align-center justify-space-between">
-        <div class="text-subtitle-2">Items</div>
-        <div class="text-subtitle-2">{{ cart.totalCount }}</div>
+      <v-divider />
+
+      <div class="pa-4">
+        <div class="d-flex align-center justify-space-between mb-3">
+          <div class="text-subtitle-2">Items</div>
+          <div class="text-subtitle-2">{{ cart.totalCount }}</div>
+        </div>
+
+        <Checkout />
       </div>
     </v-navigation-drawer>
 
@@ -37,9 +43,11 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useCartStore } from './stores/cart'
+
 import UserView from './views/UserView.vue'
 import BasketItem from './components/BasketItem.vue'
-import { useCartStore } from './stores/cart'
+import Checkout from './components/Checkout.vue'
 
 const drawer = ref(false)
 const cart = useCartStore()
