@@ -1,0 +1,45 @@
+#cloud-config
+
+# TODO: Update image names and ports below before deploying
+
+package_update: true
+
+packages:
+  - ca-certificates
+  - curl
+
+write_files:
+  - path: /opt/obelix/docker-compose.yml
+    permissions: '0644'
+    content: |
+      services:
+        obelix-basket:
+          image: ghcr.io/GITHUB_ORG/obelix-basket:latest
+          restart: unless-stopped
+          ports:
+            - "8081:8080"
+        
+        obelix-quarry:
+          image: ghcr.io/GITHUB_ORG/obelix-quarry:latest
+          restart: unless-stopped
+          ports:
+            - "8082:8080"
+        
+        obelix-webshop:
+          image: ghcr.io/GITHUB_ORG/obelix-webshop:latest
+          restart: unless-stopped
+          ports:
+            - "8080:8080"
+        
+        menhir-webshop:
+          image: ghcr.io/GITHUB_ORG/menhir-webshop:latest
+          restart: unless-stopped
+          ports:
+            - "80:80"
+
+runcmd:
+  # Install Docker
+  - curl -fsSL https://get.docker.com | sh
+  
+  # Start containers
+  - docker compose -f /opt/obelix/docker-compose.yml up -d
