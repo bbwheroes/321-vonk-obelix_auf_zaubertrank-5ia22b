@@ -47,8 +47,5 @@ write_files:
             - WATCHTOWER_CLEANUP=true
 
 runcmd:
-  # Install Docker
   - curl -fsSL https://get.docker.com | sh
-  
-  # Start containers
   - docker compose -f /opt/obelix/docker-compose.yml up -d
