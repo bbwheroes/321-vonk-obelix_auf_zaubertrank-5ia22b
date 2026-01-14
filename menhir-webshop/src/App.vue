@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar app flat>
-      <v-app-bar-title>My App</v-app-bar-title>
+      <v-app-bar-title>Obelix's Shop</v-app-bar-title>
       <v-spacer />
       <v-btn icon="mdi-cart-outline" @click="drawer = !drawer" />
     </v-app-bar>
