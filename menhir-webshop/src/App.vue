@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app flat color="light-blue-lighten-4">
+    <v-app-bar app flat>
       <v-app-bar-title>My App</v-app-bar-title>
       <v-spacer />
       <v-btn icon="mdi-cart-outline" @click="drawer = !drawer" />

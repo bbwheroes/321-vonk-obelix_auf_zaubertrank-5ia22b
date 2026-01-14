@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col v-for="item in items" :key="item.id" cols="12" md="4">
+      <v-col v-for="item in items" :key="item.id" cols="12" md="3">
         <Card
           :title="item.title"
           :subtitle="item.subtitle"
@@ -101,15 +101,6 @@ const items = [
     value: 6,
     image: "https://cdn.vuetifyjs.com/images/cards/lake.jpg",
     description: "Time moves differently by the water.",
-    buttonText: "Add to cart",
-  },
-  {
-    id: 9,
-    title: "Countryside ride",
-    subtitle: "Back roads only",
-    value: 5,
-    image: "https://cdn.vuetifyjs.com/images/cards/house.jpg",
-    description: "Sometimes the long way around is the point.",
     buttonText: "Add to cart",
   },
 ];
