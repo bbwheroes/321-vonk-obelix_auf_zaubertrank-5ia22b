@@ -1,11 +1,9 @@
 <template>
-  <v-app>
-    <v-main class="pa-6">
-      <Card/>
-    </v-main>
-  </v-app>
+  <div>
+    <AboutSection />
+  </div>
 </template>
 
 <script setup>
-import Card from '../components/Card.vue'
+import AboutSection from '../components/AboutSection.vue'
 </script>

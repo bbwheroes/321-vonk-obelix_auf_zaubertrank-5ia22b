@@ -1,10 +1,9 @@
 <template>
   <v-app>
     <v-main class="pa-6">
-      <v-btn color="primary">Test</v-btn>
-
-      <UserView/>
       
+      <UserView/>
+
     </v-main>
   </v-app>
 </template>
