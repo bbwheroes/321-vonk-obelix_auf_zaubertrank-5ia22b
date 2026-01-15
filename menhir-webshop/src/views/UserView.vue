@@ -1,11 +1,9 @@
 <template>
-  <v-app>
-    <v-main class="pa-6">
-      <Card/>
-    </v-main>
-  </v-app>
+  <Shop @add-to-cart="$emit('add-to-cart', $event)" />
 </template>
 
 <script setup>
-import Card from '../components/Card.vue'
+import Shop from '../components/Shop.vue'
+
+defineEmits(['add-to-cart'])
 </script>
