@@ -34,6 +34,11 @@ public class WebshopController {
         basketClient.getApi().leave();
 	}
 
+    @GetMapping
+    public void getBasket() {
+        basketClient.getApi().getBasket();
+    }
+
 	@PostMapping("/api/basket/buy/{menhirId}")
 	public void exchangeFor(@PathVariable UUID menhirId) {
         try{

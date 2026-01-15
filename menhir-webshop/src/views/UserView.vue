@@ -1,9 +1,9 @@
 <template>
-  <div>
-    <AboutSection />
-  </div>
+  <Shop @add-to-cart="$emit('add-to-cart', $event)" />
 </template>
 
 <script setup>
-import AboutSection from '../components/AboutSection.vue'
+import Shop from '../components/Shop.vue'
+
+defineEmits(['add-to-cart'])
 </script>

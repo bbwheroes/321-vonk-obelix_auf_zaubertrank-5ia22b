@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  backend:
+    environment:
+      MANAGEMENT_TRACING_ENABLED: "false"
+      SPRING_ZIPKIN_ENABLED: "false"
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"   # webshop
+      - "8081:8081"   # quarry service
+      - "8082:8082"   # basket service
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    driver: bridge
