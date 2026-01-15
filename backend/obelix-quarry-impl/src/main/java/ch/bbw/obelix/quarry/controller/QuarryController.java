@@ -7,6 +7,8 @@ import ch.bbw.obelix.quarry.repository.MenhirRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.StandardException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,7 +31,28 @@ public class QuarryController implements QuarryApi {
     public MenhirDto getMenhirById(UUID menhirId) {
         return menhirRepository.findById(menhirId)
                 .map(MenhirEntity::toDto)
-                .orElseThrow(() -> new UnknownMenhirException("unknwon menhir with id " + menhirId));
+                .orElseThrow(() -> new UnknownMenhirException("unknown menhir with id " + menhirId));
+    }
+
+    @Override
+    public MenhirDto createMenhir(MenhirDto menhirDto) {
+        MenhirEntity entity = new MenhirEntity();
+        entity.setWeight(menhirDto.weight());
+        entity.setStoneType(menhirDto.stoneType());
+        entity.setDecorativeness(MenhirEntity.Decorativeness.fromDto(menhirDto.decorativeness()));
+        entity.setDescription(menhirDto.description());
+        return menhirRepository.save(entity).toDto();
+    }
+
+    @Override
+    public MenhirDto updateMenhir(@PathVariable("menhirId") UUID menhirId, @RequestBody MenhirDto menhirDto) {
+        MenhirEntity entity = menhirRepository.findById(menhirId)
+                .orElseThrow(() -> new UnknownMenhirException("unknown menhir with id " + menhirId));
+        entity.setWeight(menhirDto.weight());
+        entity.setStoneType(menhirDto.stoneType());
+        entity.setDecorativeness(MenhirEntity.Decorativeness.fromDto(menhirDto.decorativeness()));
+        entity.setDescription(menhirDto.description());
+        return menhirRepository.save(entity).toDto();
     }
 
     @Override
