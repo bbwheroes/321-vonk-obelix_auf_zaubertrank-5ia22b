@@ -7,7 +7,7 @@
           :subtitle="item.subtitle"
           :description="item.description"
           :image="item.image"
-          :buttonText="item.buttonText"
+          buttonText="Add to cart"
           @add-to-cart="onAdd(item)"
         />
       </v-col>
@@ -38,7 +38,7 @@ const items = [
     image: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
     description:
       "I’m a thing. But, like most politicians, he promised more than he could deliver.",
-    buttonText: "Add to cart",
+
   },
   {
     id: 2,
@@ -47,7 +47,7 @@ const items = [
     value: 9,
     image: "https://cdn.vuetifyjs.com/images/cards/mountain.jpg",
     description: "You won’t have time for sleeping, soldier.",
-    buttonText: "Add to cart",
+
   },
   {
     id: 3,
@@ -56,7 +56,7 @@ const items = [
     value: 11,
     image: "https://cdn.vuetifyjs.com/images/cards/desert.jpg",
     description: "Then we’ll go with that data file!",
-    buttonText: "Add to cart",
+
   },
   {
     id: 4,
@@ -65,7 +65,6 @@ const items = [
     value: 7,
     image: "https://cdn.vuetifyjs.com/images/cards/forest.jpg",
     description: "Sometimes the best plan is no plan at all.",
-    buttonText: "Add to cart",
   },
   {
     id: 5,
@@ -74,7 +73,6 @@ const items = [
     value: 10,
     image: "https://cdn.vuetifyjs.com/images/cards/road.jpg",
     description: "Every turn comes with a view worth stopping for.",
-    buttonText: "Add to cart",
   },
   {
     id: 6,
@@ -83,7 +81,6 @@ const items = [
     value: 8,
     image: "https://cdn.vuetifyjs.com/images/cards/city.jpg",
     description: "Concrete, neon, and endless stories.",
-    buttonText: "Add to cart",
   },
   {
     id: 7,
@@ -92,7 +89,6 @@ const items = [
     value: 12,
     image: "https://cdn.vuetifyjs.com/images/cards/snow.jpg",
     description: "Up here, everything feels simpler.",
-    buttonText: "Add to cart",
   },
   {
     id: 8,
@@ -101,7 +97,6 @@ const items = [
     value: 6,
     image: "https://cdn.vuetifyjs.com/images/cards/lake.jpg",
     description: "Time moves differently by the water.",
-    buttonText: "Add to cart",
   },
 ];
 </script>
