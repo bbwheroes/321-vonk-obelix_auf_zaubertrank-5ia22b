@@ -7,84 +7,36 @@ ifndef::imagesdir[:imagesdir: ../images]
 
 === Whitebox Overall System
 
-_**<Overview Diagram>**_
+Hier beschreiben wir die wichtigsten Teile des Systems.
 
-Motivation::
+==== Basket API (Warenkorb)
 
-_<text explanation>_
-
-Contained Building Blocks::
-_<Description of contained building block (black boxes)>_
+Die Basket API verwaltet den Einkaufskorb. Man kann sehen was drin ist, Sachen reinlegen, alles rauswerfen oder den Inhalt gegen einen Stein tauschen.
 
 Important Interfaces::
-_<Description of important interfaces>_
 
-==== <Name black box 1>
-
-_<Purpose/Responsibility>_
-
-_<Interface(s)>_
-
-_<(Optional) Quality/Performance Characteristics>_
-
-_<(Optional) Directory/File Location>_
-
-_<(Optional) Fulfilled Requirements>_
-
-_<(optional) Open Issues/Problems/Risks>_
-
-
-
-
-==== <Name black box 2>
-
-_<black box template>_
-
-==== <Name black box n>
-
-_<black box template>_
-
-
-==== <Name interface 1>
-
-...
-
-==== <Name interface m>
-
-
-
-=== Level 2
-
-==== White Box _<building block 1>_
-
-_<white box template>_
-
-==== White Box _<building block 2>_
-
-
-_<white box template>_
-
-...
-
-==== White Box _<building block m>_
-
-
-_<white box template>_
-
-
+* `GET /api/basket`: Zeigt den Inhalt des Korbs.
+* `GET /api/basket/offer`: Legt etwas in den Korb.
+* `DELETE /api/basket`: Leert den Korb.
+* `POST /api/basket/buy/{menhirId}`: Tauscht den Korb-Inhalt gegen den Stein mit der ID `menhirId`.
 
 === Level 3
 
-==== White Box <_building block x.1_>
+* `BasketDto`: Der Korb mit einer Liste von Sachen.
+* `BasketItem`: Ein Gegenstand im Korb (Name und Anzahl).
 
-_<white box template>_
+==== Quarry API (Steinbruch)
 
+Die Quarry API verwaltet die Hinkelsteine.
 
-==== White Box <_building block x.2_>
+Schnittstellen::
 
-_<white box template>_
+* `GET /api/menhirs`: Zeigt alle Steine.
+* `GET /api/menhirs/{menhirId}`: Zeigt einen bestimmten Stein.
+* `POST /api/menhirs`: Erstellt einen neuen Stein.
+* `PUT /api/menhirs/{menhirId}`: Ändert einen Stein.
+* `DELETE /api/quarry/{menhirId}`: Löscht einen Stein.
 
+Daten::
 
-==== White Box <_building block y.1_>
-
-_<white box template>_
+* `MenhirDto`: Ein Hinkelstein.
