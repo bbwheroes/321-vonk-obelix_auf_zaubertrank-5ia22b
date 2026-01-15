@@ -29,12 +29,6 @@ die den Architektur- und Implementationsspielraum des Obelix-Projekts beeinfluss
 | Verwendung von Observability-Tools
 | Zipkin für Tracing, Prometheus für Metriken, Grafana als Visualisierung.
 
-| AsciiDoc als Dokumentationsformat
-| Architekturdokumentation muss vollständig in AsciiDoc erstellt sein.
-
-| PlantUML für Diagramme
-| Diagramme werden als eingebettete PlantUML-Blöcke definiert.
-
 | Auto-generierte Code-Samples aus Tests
 | Code-Beispiele in der Dokumentation müssen testbasiert generiert sein (Spring REST Docs).
 
@@ -42,13 +36,10 @@ die den Architektur- und Implementationsspielraum des Obelix-Projekts beeinfluss
 | Jeder Commit/PR triggert einen automatischen Build und Testlauf.
 
 | Automatisiertes Deployment des main-Branches
-| Der `main`-Branch wird automatisch in die Produktionsumgebung deployt.
-
-| docker-compose Setup empfohlen
-| Zusammenspiel der Services soll über das Gradle Docker Compose Plugin orchestriert werden.
+| Der main-Branch wird bei jedem Merge automatisch gebuilded und deployed.
 
 | Zielumgebung: BBW MaaS
-| Deployment soll in der MaaS-Infrastruktur erfolgen (falls möglich).
+| Zielsystem ist die BBW MaaS Plattform; Risiken bzgl. Erreichbarkeit oder Konfiguration sind bekannt
 |===
 
 
@@ -63,9 +54,6 @@ die den Architektur- und Implementationsspielraum des Obelix-Projekts beeinfluss
 
 | PlantUML als Diagrammstandard
 | Alle Architekturdiagramme müssen als PlantUML eingebunden sein.
-
-| Generierte Clients statt manueller API-Calls
-| Keine selbstgeschriebenen API-Clients im FE; nur OpenAPI-Generator.
 
 | Saubere und vollständige OpenAPI-Beschreibungen
 | Beschreibungen und Beispiele sind verpflichtend zur Lesbarkeit.
