@@ -17,11 +17,21 @@
           </div>
 
           <div class="d-flex flex-wrap ga-2">
-            <v-chip color="light-blue-darken-3" variant="flat">Superhuman</v-chip>
-            <v-chip color="light-blue-darken-3" variant="flat">Hinkelstein</v-chip>
-            <v-chip color="light-blue-darken-3" variant="flat">Menhir</v-chip>
-            <v-chip color="light-blue-darken-3" variant="flat">Romans Beware</v-chip>
-            <v-chip color="light-blue-darken-3" variant="flat">Gaulish Craftsmanship</v-chip>
+            <v-chip color="light-blue-darken-3" variant="flat">
+              ⚡ Superhuman
+            </v-chip>
+            <v-chip color="light-blue-darken-3" variant="flat">
+              🗿 Hinkelstein
+            </v-chip>
+            <v-chip color="light-blue-darken-3" variant="flat">
+              🗿 Menhir
+            </v-chip>
+            <v-chip color="light-blue-darken-3" variant="flat">
+              ⚔️ Romans Beware
+            </v-chip>
+            <v-chip color="light-blue-darken-3" variant="flat">
+              🔨 Gaulish Craftsmanship
+            </v-chip>
           </div>
         </v-col>
 
@@ -54,8 +64,7 @@ const props = defineProps({
 
 <style scoped>
 .about-image {
-  max-width: 100%;
-  height: 500px;
-  border-radius: 1rem;
+  max-width: 110%;
+  border-radius: 1rem;  
 }
 </style>
