@@ -3,15 +3,143 @@ ifndef::imagesdir[:imagesdir: ../images]
 [[section-runtime-view]]
 == Runtime View
 
-=== <Runtime Scenario 1>
+
+Diese Sicht beschreibt das Verhalten der Backend.
+
+=== Szenario 1: Menhir-Katalog abrufen
+
+Das Frontend ruft die Liste aller Menhirs ab.
+
+[plantuml, get-all-menhirs, png]
+----
+@startuml
+actor "Frontend" as Client
+participant "QuarryController" as Controller
+participant "MenhirRepository" as Repo
+database "Datenbank" as DB
+
+Client -> Controller: GET /menhirs
+activate Controller
+
+Controller -> Repo: findAll()
+activate Repo
+
+Repo -> DB: SQL SELECT *
+activate DB
+DB --> Repo: Result Set
+deactivate DB
+
+Repo --> Controller: List<MenhirEntity>
+deactivate Repo
+
+Controller -> Controller: toDto() Mapping
+Controller --> Client: 200 OK (List<MenhirDto>)
+deactivate Controller
+@enduml
+----
+
+**Ablauf:**
+1. Der `QuarryController` nimmt die GET-Anfrage.
+2. Er ruft direkt das `MenhirRepository` auf.
+3. Die Entity werden aus der Datenbank geladen.
+4. Der Controller sendet sie als JSON zurück.
+
+=== Szenario 2: Menhir in den Basket legen
+
+Der User will einen Menhir kaufen und fügt es dem Basket hinzu.
+
+[plantuml, offer-basket, png]
+----
+@startuml
+actor "Frontend" as Client
+participant "BasketController" as Controller
+participant "BasketService" as Service
+
+Client -> Controller: POST /basket/offer
+
+activate Controller
+
+Controller -> Service: offer(basketItem)
+activate Service
+
+Service -> Service: Add Item to State (In-Memory)
 
 
-* _<insert runtime diagram or textual description of the scenario>_
-* _<insert description of the notable aspects of the interactions between the
-building block instances depicted in this diagram.>_
+Service --> Controller: Updated BasketDto
+deactivate Service
 
-=== <Runtime Scenario 2>
+Controller --> Client: 200 OK (BasketDto)
+deactivate Controller
+@enduml
+----
 
-=== ...
+**Ablauf:**
+1. Der `BasketController` empfängt das Item.
+2. Die Logik wird an den `BasketService` geschickt.
+3. Der Service aktualisiert den Basket.
+4. Der Basket wird zurückgegeben.
 
-=== <Runtime Scenario n>
+=== Szenario 3: Neuen Menhir anlegen
+
+Der User macht neue Menhir.
+
+[plantuml, create-menhir, png]
+----
+@startuml
+actor "Frontend" as Client
+participant "QuarryController" as Controller
+participant "MenhirEntity" as Entity
+participant "MenhirRepository" as Repo
+database "Datenbank" as DB
+
+Client -> Controller: POST /menhirs
+activate Controller
+
+Controller -> Entity: new MenhirEntity(dto)
+activate Entity
+Entity --> Controller: entity
+deactivate Entity
+
+Controller -> Repo: save(entity)
+activate Repo
+
+Repo -> DB: SQL INSERT
+activate DB
+DB --> Repo: Committed ID
+deactivate DB
+
+Repo --> Controller: Saved Entity
+deactivate Repo
+
+Controller --> Client: 200 OK (MenhirDto mit UUID)
+deactivate Controller
+@enduml
+----
+=== Szenario 4: Basket-Exchange
+
+Der Prozess, den Inhalt des Baskets gegen einen Menhir einzutauschen (Checkout-Prozess).
+
+[plantuml, exchange-basket, png]
+----
+@startuml
+actor "Frontend" as Client
+participant "BasketController" as Controller
+participant "BasketService" as Service
+
+Client -> Controller: POST /basket/exchange/{menhirId}
+activate Controller
+
+Controller -> Service: exchange(menhirId)
+activate Service
+
+Service -> Service: Validate Basket
+Service -> Service: Process Exchange Logic
+Service -> Service: Empty Basket
+
+Service --> Controller: void
+deactivate Service
+
+Controller --> Client: 200 OK
+deactivate Controller
+@enduml
+----
