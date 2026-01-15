@@ -1,0 +1,133 @@
+Ja, da gibt’s definitiv ein paar Begriffe aus eurem Projekt, die **im Glossar landen sollten**, damit neue Devs, Reviewer oder PenTester sofort checken, was gemeint ist.
+
+Ich mach dir eine Liste mit:
+
+* **Must-have** Begriffen (fix rein)
+* **Nice-to-have** Begriffen (optional, aber sinnvoll)
+* kurze Erklärungen, wie man sie im Glossar schreibt (keine Romane)
+
+---
+
+# ✅ Must-have Begriffe fürs Glossar
+
+Das sind Begriffe, die ihr ständig verwendet und die im Projektvorgaben stehen — die gehören **fix** ins Glossar.
+
+---
+
+### **Microservice**
+
+*Kleine, unabhängige Anwendung mit eigener Datenhaltung und klar definierter API.*
+
+### **OpenAPI / OAS 3.x**
+
+*Spezifikation zur Beschreibung von REST-APIs. Im Projekt werden alle Schnittstellen als OAS 3.x definiert und aus Code generiert.*
+
+### **Code-first**
+
+*Die API-Dokumentation wird automatisch aus dem implementierten Code erzeugt (z.B. via springdoc).*
+
+### **OpenAPI Client Generator**
+
+*Tool, das aus einer OpenAPI-Spezifikation automatisch Client-Code generiert (z.B. für JS/TS im Frontend).*
+
+### **Zipkin**
+
+*Tool für Distributed Tracing zum Verfolgen von Requests über mehrere Microservices hinweg.*
+
+### **Prometheus**
+
+*Metrik-Sammlungssystem, das Monitoring-Daten von Services abfragt.*
+
+### **Grafana**
+
+*Visualisierungstool, das Prometheus-Metriken grafisch darstellt.*
+
+### **Spring REST Docs**
+
+*Werkzeug zum automatischen Generieren von API-Dokumentations-Beispielen basierend auf Tests.*
+
+### **CI Pipeline**
+
+*Automatisierte Build-, Test- und Analyseprozesse, die bei jedem Commit/PR ausgeführt werden.*
+
+### **Protected Branch / Schutzregel**
+
+*Repo-Einstellung, die verhindert, dass der main-Branch direkt beschrieben wird — nur PRs mit Reviews erlaubt.*
+
+### **BBW MaaS**
+
+*Hosting- und Deployment-Plattform des BBW. Zielsystem für das Produktive Deployment.*
+
+### **AsciiDoc**
+
+*Textformat für technische Dokumentation; im Projekt verbindlich.*
+
+### **PlantUML**
+
+*Diagramm-Tool, das per Textsyntax Diagramme erzeugt.*
+
+---
+
+# 🟨 Nice-to-have Begriffe (optional, aber hilfreich)
+
+Wenn du Platz hast, machen diese Begriffe die Doku „runder“ für Leute, die neu reinkommen.
+
+---
+
+### **Frontend (FE)**
+
+*Web-UI, das mit generiertem API-Client die Services konsumiert.*
+
+### **Backend (BE)**
+
+*Microservices, die Logik und Daten liefern.*
+
+### **CRUD**
+
+*Create, Read, Update, Delete – Standard-Operationen auf Ressourcen.*
+
+### **Repository (Repo)**
+
+*GitHub-Verzeichnis, in dem Code und Doku abgelegt ist.*
+
+### **PR / Pull Request**
+
+*Anfrage, um Änderungen zusammenzuführen; muss reviewed werden.*
+
+### **Review**
+
+*Begutachtung von Code-Änderungen durch andere Devs; mindestens drei Reviews sind Pflicht.*
+
+### **Hinkelstein**
+
+*(Innerhalb des Projekts)*
+*Die Domänenentität / das Kernobjekt, das gekauft/verwaltet wird.*
+
+### **Admin-UI**
+
+*Bereich der Anwendung zur Verwaltung (CRUD) der Hinkelsteine.*
+
+---
+
+# 🔍 Nice Bonus: Projektspezifische Begriffe
+
+Gerade für arc42 ist es hilfreich, projektspezifische Begriffe zu erklären:
+
+---
+
+### **Obelix**
+
+*Name der Anwendung / Produktbezeichnung.*
+
+### **Zaubertrank-Version**
+
+*Versions-Schema des Projekts (gemäss Aufgabenstellung).*
+
+---
+
+# 📌 Empfehlung
+
+Ich würde mindestens die **Must-have** reinnehmen.
+Die Nice-to-have kannst du nach Gefühl ergänzen, je nachdem, wie ausführlich eure Doku sein soll.
+
+Wenn du willst, kann ich dir auch direkt ein eigentliches **Glossar-Kapitel in AsciiDoc** generieren, fertig formatiert für arc42.
