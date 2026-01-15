@@ -3,99 +3,251 @@ ifndef::imagesdir[:imagesdir: ../images]
 [[section-introduction-and-goals]]
 == Introduction and Goals
 
-ifdef::arc42help[]
+Die Obelix-Applikation ist eine moderne, verteilte E-Commerce-Plattform für den Verkauf und die Verwaltung von Hinkelsteinen. Das System wurde als Klassenprojekt entwickelt und demonstriert den Einsatz von Microservice-Architektur, OpenAPI-Standards und modernen DevOps-Praktiken.
+
 [role="arc42help"]
 ****
-Describes the relevant requirements and the driving forces that software architects and development team must consider. 
-These include
+.Inhalt
+Kurze Beschreibung der funktionalen Anforderungen, treibenden Kräfte, Extrakt (oder Abstract) der Requirements. Verweis auf (hoffentlich vorliegende) Anforderungsdokumente (mit Versionsnummer und Ablageort).
 
-* underlying business goals, 
-* essential features, 
-* essential functional requirements, 
-* quality goals for the architecture and
-* relevant stakeholders and their expectations
+.Motivation
+Aus Sicht der späteren Nutzung ist die Unterstützung einer fachlichen Aufgabe oder Verbesserung der Qualität der eigentliche Beweggrund, ein neues System zu schaffen oder ein bestehendes zu modifizieren.
+
+.Form
+Kurze textuelle Beschreibung, eventuell in tabellarischer Use-Case Form. Sofern vorhanden, sollte die Aufgabenstellung Verweise auf die entsprechenden Anforderungsdokumente enthalten.
+
+Halten Sie diese Auszüge so knapp wie möglich und wägen Sie Lesbarkeit und Redundanzfreiheit gegeneinander ab.
 ****
-endif::arc42help[]
 
 === Requirements Overview
 
-ifdef::arc42help[]
 [role="arc42help"]
 ****
-.Contents
-Short description of the functional requirements, driving forces, extract (or abstract)
-of requirements. Link to (hopefully existing) requirements documents
-(with version number and information where to find it).
+.Inhalt
+Kurze textuelle Beschreibung der fachlichen Aufgabenstellung, Extrakt der funktionalen Anforderungen. Verweis auf detaillierte Anforderungsdokumente.
 
 .Motivation
-From the point of view of the end users a system is created or modified to
-improve support of a business activity and/or improve the quality.
+Jeder, der mit dem System zu tun hat, sollte über dessen fachliche Ziele im Bilde sein.
 
 .Form
-Short textual description, probably in tabular use-case format.
-If requirements documents exist this overview should refer to these documents.
-
-Keep these excerpts as short as possible. Balance readability of this document with potential redundancy w.r.t to requirements documents.
-
-
-.Further Information
-
-See https://docs.arc42.org/section-1/[Introduction and Goals] in the arc42 documentation.
-
+Kurze textuelle Beschreibung, eventuell in tabellarischer Form.
 ****
-endif::arc42help[]
+
+**Fachliche Ziele:**
+
+Das Obelix-System ermöglicht den digitalen Vertrieb von Hinkelsteinen und bietet eine zentrale Verwaltungsplattform für das Produktsortiment. Kunden können selbstständig Hinkelsteine durchsuchen und bestellen, während Administratoren das Angebot pflegen.
+
+**Kernfunktionen:**
+
+* *Customer Web UI:* Kundenzugang zum Hinkelstein-Katalog mit Such- und Bestellfunktionen
+* *Admin Web UI:* Verwaltungsinterface für CRUD-Operationen auf Hinkelsteinen
+* *RESTful API:* Öffentliche Schnittstellen für externe Entwickler zur Integration
+* *Monitoring & Observability:* Vollständige Überwachung durch Zipkin, Prometheus und Grafana
+
+**Technische Kernanforderungen:**
+
+[options="header",cols="1,3"]
+|===
+|Kategorie |Anforderung
+
+|*Architektur*
+|Mindestens 3 unabhängige Microservices mit klarer Verantwortlichkeitstrennung
+
+|*API-Spezifikation*
+|OpenAPI 3.x (OAS) für alle Service-Schnittstellen, code-first generiert (z.B. springdoc-openapi)
+
+|*API-Dokumentation*
+|Alle OAS Properties mit Beschreibungen und Beispielen versehen
+
+|*Frontend*
+|Ausschließliche Nutzung generierter OpenAPI-Clients (z.B. openapi-generator)
+
+|*Observability*
+|Integration von Zipkin (Distributed Tracing), Prometheus (Metrics), Grafana (Dashboards)
+
+|*Dokumentation*
+|arc42-Architekturdokumentation in AsciiDoc mit PlantUML-Diagrammen
+
+|*Integration Guide*
+|Umfassende Anleitung für externe Entwickler mit auto-generierten Code-Samples aus Tests
+
+|*CI/CD*
+|Automatisierte Build-Pipeline und Deployment in Produktion (BBW MaaS) bei jedem main-Branch Commit
+
+|*Code Quality*
+|Alle Änderungen via Pull Requests mit mindestens 3 Reviews
+
+|*Testing*
+|Automatisierte Tests bei jedem PR
+|===
+
+**Nicht-funktionale Anforderungen:**
+
+* *Keine Authentisierung:* Admin-UI bewusst ohne Session-Management (Projektanforderung: "easy")
+* *LLM-Nutzung:* AI-generierter Code soll verborgen bleiben (keine typischen AI-Muster)
+* *Kollaboration:* Arbeitsteilung durch die Klasse, gemeinsame Verantwortung für Endergebnis
 
 === Quality Goals
 
-ifdef::arc42help[]
 [role="arc42help"]
 ****
-.Contents
-The top three (max five) quality goals for the architecture whose fulfillment is of highest importance to the major stakeholders. 
-We really mean quality goals for the architecture. Don't confuse them with project goals.
-They are not necessarily identical.
-
-Consider this overview of potential topics (based upon the ISO 25010 standard):
-
-image::01_2_iso-25010-topics-EN-2023.drawio.png["Categories of Quality Requirements"]
+.Inhalt
+Die Top-3 bis Top-5 der Qualitätsziele für die Architektur, deren Erfüllung oder Einhaltung den maßgeblichen Stakeholdern besonders wichtig sind. Gemeint sind hier wirklich Qualitätsziele, die nicht unbedingt mit den Zielen des Projekts übereinstimmen. Beachten Sie den Unterschied.
 
 .Motivation
-You should know the quality goals of your most important stakeholders, since they will influence fundamental architectural decisions. 
-Make sure to be very concrete about these qualities, avoid buzzwords.
-If you as an architect do not know how the quality of your work will be judged...
+Weil Qualitätsziele grundlegende Architekturentscheidungen oft maßgeblich beeinflussen, sollten Sie die für Ihre Stakeholder relevanten Qualitätsziele kennen, möglichst konkret und operationalisierbar.
 
 .Form
-A table with quality goals and concrete scenarios, ordered by priorities
+Tabellarische Darstellung der Qualitätsziele mit möglichst konkreten Szenarien, geordnet nach Prioritäten.
 ****
-endif::arc42help[]
-
-=== Stakeholders
-
-ifdef::arc42help[]
-[role="arc42help"]
-****
-.Contents
-Explicit overview of stakeholders of the system, i.e. all person, roles or organizations that
-
-* should know the architecture
-* have to be convinced of the architecture
-* have to work with the architecture or with code
-* need the documentation of the architecture for their work
-* have to come up with decisions about the system or its development
-
-.Motivation
-You should know all parties involved in development of the system or affected by the system.
-Otherwise, you may get nasty surprises later in the development process.
-These stakeholders determine the extent and the level of detail of your work and its results.
-
-.Form
-Table with role names, person names, and their expectations with respect to the architecture and its documentation.
-****
-endif::arc42help[]
 
 [options="header",cols="1,2,2"]
 |===
-|Role/Name|Contact|Expectations
-| _<Role-1>_ | _<Contact-1>_ | _<Expectation-1>_
-| _<Role-2>_ | _<Contact-2>_ | _<Expectation-2>_
+|Priorität |Qualitätsziel |Szenario/Operationalisierung
+
+|1
+|*API-First Entwicklung*
+|Alle Service-Schnittstellen sind vollständig mit OpenAPI 3.x spezifiziert. Frontend-Entwickler können parallel zu Backend-Entwicklung arbeiten, indem sie generierte Clients nutzen. Externe Entwickler verstehen die API ohne zusätzliche Dokumentation.
+
+|2
+|*Wartbarkeit & Verständlichkeit*
+|Neue Entwickler können sich innerhalb von 2 Stunden durch die arc42-Dokumentation in das System einarbeiten. Alle Architekturentscheidungen sind nachvollziehbar dokumentiert. Code-Samples in der Dokumentation sind immer aktuell (auto-generiert aus Tests).
+
+|3
+|*Observability*
+|Bei jedem Request ist der vollständige Trace über alle Microservices in Zipkin sichtbar. Performance-Probleme können durch Prometheus-Metriken innerhalb von 5 Minuten identifiziert werden. Grafana-Dashboards zeigen Systemzustand in Echtzeit.
+
+|4
+|*Continuous Deployment*
+|Jeder Merge in den main-Branch führt automatisch zu einem Deployment in Produktion. Build-Fehler werden innerhalb von 10 Minuten durch CI-Pipeline erkannt. Rollback ist durch Docker-Container-Versionierung jederzeit möglich.
+
+|5
+|*Teamfähigkeit*
+|Mindestens 3 Reviews pro Pull Request stellen Code-Qualität sicher. Code-Ownership ist durch CODEOWNERS klar definiert. Merge-Konflikte werden durch Branch-Protection und klare Verantwortlichkeiten minimiert.
 |===
+
+**Qualitätsbaum (nach ISO 25010):**
+
+[plantuml, quality-tree, svg]
+----
+@startmindmap
+* Obelix Quality Goals
+** Functionality
+*** API Completeness
+*** RESTful Design
+** Reliability
+*** Fault Tolerance
+*** Traceability (Zipkin)
+** Maintainability
+*** Modifiability
+*** Testability
+*** Documentation Quality
+** Performance
+*** Response Time
+*** Throughput
+** Usability
+*** Learnability (Developer)
+*** API Understandability
+@endmindmap
+----
+
+=== Stakeholders
+
+[role="arc42help"]
+****
+.Inhalt
+Expliziter Überblick über die Stakeholder des Systems – über alle Personen, Rollen oder Organisationen –, die
+
+* die Architektur kennen sollten oder
+* von der Architektur überzeugt werden müssen,
+* mit der Architektur oder dem Code arbeiten (z.B. Schnittstellen nutzen),
+* die Dokumentation der Architektur für ihre eigene Arbeit benötigen,
+* Entscheidungen über das System und dessen Entwicklung treffen.
+
+.Motivation
+Sie sollten die Projektbeteiligten und -betroffenen kennen, sonst erleben Sie später im Entwicklungsprozess Überraschungen. Diese Stakeholder bestimmen unter anderem Umfang und Detaillierungsgrad der von Ihnen zu leistenden Arbeit und Ergebnisse.
+
+.Form
+Tabelle mit Rollen- oder Personennamen, sowie deren Erwartungshaltung bezüglich der Architektur und deren Dokumentation.
+****
+
+[options="header",cols="1,2,2"]
+|===
+|Role/Name |Contact |Expectations
+
+|*Projektlead*
+|Klassenintern bestimmt
+|Koordiniert Teams, enforced Standups, stellt Gesamtziel sicher. Erwartet klare Arbeitsteilung und Blocker-Management.
+
+|*Klassenteam / Entwickler*
+|Alle Klassenmitglieder
+|Erwarten klare Aufgabenzuteilung, gut dokumentierte APIs (OpenAPI), funktionierende CI/CD-Pipeline, konstruktive PR-Reviews. Jeder schreibt einen arc42-Teil und erstellt mindestens einen guten PR.
+
+|*Frontend-Team*
+|Fokus-Team intern
+|Benötigt vollständige OpenAPI-Spezifikationen frühzeitig, generierte Clients, funktionierende CRUD-Endpoints. Erwarten stabile API-Contracts.
+
+|*DevOps-Team*
+|Fokus-Team intern
+|Verantwortlich für CI/CD-Pipeline, Docker-Setup, Deployment auf BBW MaaS. Erwarten automatisierte Tests und klare Deployment-Anforderungen.
+
+|*Architecture-Team*
+|Fokus-Team intern
+|Erstellt arc42-Dokumentation, PlantUML-Diagramme. Erwartet Input von allen Teams zu Architekturentscheidungen und Schnittstellen.
+
+|*Integration Guide-Team*
+|Fokus-Team intern
+|Schreibt Integrationsanleitung für externe Entwickler. Benötigt stabile APIs, Beispiel-Code aus Tests (Spring REST Docs).
+
+|*Externe Entwickler*
+|Zukünftige API-Nutzer
+|Erwarten verständliche OpenAPI-Spezifikation, vollständigen Integration Guide mit funktionierenden Code-Beispielen, klare Fehlermeldungen.
+
+|*Kunden (Endnutzer)*
+|Hinkelstein-Käufer
+|Erwarten intuitives Web-Interface, schnelle Ladezeiten, zuverlässige Bestellfunktion.
+
+|*Administratoren*
+|Hinkelstein-Verwalter
+|Benötigen einfaches CRUD-Interface ohne komplexe Authentisierung, schnelle Bearbeitungsmöglichkeiten.
+
+|*PenTester / Security Auditors*
+|Potenzielle Reviewer
+|Nutzen arc42-Dokumentation zur Risikoanalyse. Erwarten Transparenz über Sicherheitsarchitektur (bewusst fehlende Authentisierung dokumentiert).
+
+|*Neue Entwickler (Onboarding)*
+|Zukünftige Team-Mitglieder
+|Erwarten vollständige arc42-Dokumentation mit Kontext, Lösungsstrategie, Deployment-View. Sollen sich eigenständig einarbeiten können.
+
+|*Betrieb / Operations*
+|BBW MaaS Admin
+|Erwarten stabiles Deployment, Monitoring-Integration, dokumentierte Systemanforderungen (Docker, Ressourcen).
+
+|*Dozent / Bewerter*
+|Projektauftraggeber
+|Prüft Erfüllung aller Anforderungen: OpenAPI-Qualität, arc42-Vollständigkeit, PR-Reviews, CI/CD-Funktionalität, Teamarbeit.
+|===
+
+**CODEOWNERS Zuordnung:**
+
+Gemäß Projektanforderung werden Fokus-Teams definiert und in einem CODEOWNERS-File dokumentiert:
+
+----
+# Frontend
+/frontend/** @frontend-team
+
+# Integration Guide  
+/docs/integration-guide/** @integration-guide-team
+
+# Architecture Documentation
+/docs/arc42/** @architecture-team
+
+# DevOps / CI/CD
+/.github/** @devops-team
+/docker-compose.yml @devops-team
+/deployment/** @devops-team
+
+# Microservices
+/service-*/** @backend-team
+----
+ 
