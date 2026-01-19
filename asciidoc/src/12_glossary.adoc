@@ -1,15 +1,24 @@
 ifndef::imagesdir[:imagesdir: ../images]
 
 [[section-glossary]]
-== Glossary
+== Glossar
 
 [cols="e,2e" options="header"]
 |===
-|Term |Definition
+|Begriff |Erklärung
 
-|<Term-1>
-|<definition-1>
+|Basket (Warenkorb)
+|Sammlung von Waren zum Tauschen.
 
-|<Term-2>
-|<definition-2>
+|Menhir (Hinkelstein)
+|Großer Stein aus dem Steinbruch.
+
+|Decorativeness (Schönheit/Wert)
+|Bestimmt, wie wertvoll ein Stein ist.
+
+|BasketItem
+|Eine Ware im Korb (z.B. Wildschwein).
+
+|Quarry (Steinbruch)
+|Ort, wo die Steine herkommen.
 |===
