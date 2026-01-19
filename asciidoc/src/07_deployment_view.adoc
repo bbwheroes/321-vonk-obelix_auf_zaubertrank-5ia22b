@@ -86,6 +86,23 @@ Mapping of Building Blocks to Infrastructure::
 
 ==== MaaS VM
 
+[cols="1,2"]
+|===
+|Specification |Value
+
+|OS
+|Ubuntu 24.04 LTS
+
+|CPU
+|2 Cores
+
+|RAM
+|2 GB
+
+|Disk
+|20 GB
+|===
+
 The VM is provisioned using a cloud-init script (`cloud-init.yaml`) that:
 
 1. Installs Docker via the convenience script (`get.docker.com`)
