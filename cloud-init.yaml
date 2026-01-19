@@ -37,6 +37,20 @@ write_files:
           ports:
             - "80:80"
         
+        zipkin:
+          image: openzipkin/zipkin:latest
+          restart: unless-stopped
+          ports:
+            - "9411:9411"
+        
+        prometheus:
+          image: prom/prometheus:latest
+          restart: unless-stopped
+          ports:
+            - "9090:9090"
+          volumes:
+            - /opt/obelix/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+        
         watchtower:
           image: containrrr/watchtower:latest
           restart: unless-stopped
@@ -45,6 +59,28 @@ write_files:
           environment:
             - WATCHTOWER_POLL_INTERVAL=30
             - WATCHTOWER_CLEANUP=true
+
+  - path: /opt/obelix/prometheus.yml
+    permissions: '0644'
+    content: |
+      global:
+        scrape_interval: 5s
+      
+      scrape_configs:
+        - job_name: 'obelix-basket'
+          metrics_path: /actuator/prometheus
+          static_configs:
+            - targets: ['obelix-basket:8080']
+        
+        - job_name: 'obelix-quarry'
+          metrics_path: /actuator/prometheus
+          static_configs:
+            - targets: ['obelix-quarry:8080']
+        
+        - job_name: 'obelix-webshop'
+          metrics_path: /actuator/prometheus
+          static_configs:
+            - targets: ['obelix-webshop:8080']
 
 runcmd:
   - curl -fsSL https://get.docker.com | sh
