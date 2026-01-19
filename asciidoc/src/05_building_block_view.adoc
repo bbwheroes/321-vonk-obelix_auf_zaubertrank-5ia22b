@@ -5,86 +5,141 @@ ifndef::imagesdir[:imagesdir: ../images]
 
 == Building Block View
 
-=== Whitebox Overall System
+=== Infrastructure Overview
 
-_**<Overview Diagram>**_
+==== Deployment Environment
 
-Motivation::
+The system runs on a **single VM** provisioned via the school-internal MaaS (Metal as a Service) platform.
 
-_<text explanation>_
+[cols="1,3"]
+|===
+|Aspect |Description
 
-Contained Building Blocks::
-_<Description of contained building block (black boxes)>_
+|Platform
+|School MaaS
 
-Important Interfaces::
-_<Description of important interfaces>_
+|Lifetime
+|1 month (ephemeral, data is lost on reprovisioning)
 
-==== <Name black box 1>
+|Provisioning
+|cloud-init script (`cloud-init.yaml`)
 
-_<Purpose/Responsibility>_
+|Container Runtime
+|Docker with Docker Compose
 
-_<Interface(s)>_
+|Image Registry
+|GitHub Container Registry (ghcr.io)
+|===
 
-_<(Optional) Quality/Performance Characteristics>_
+==== Infrastructure Diagram
 
-_<(Optional) Directory/File Location>_
+[plantuml, infrastructure-overview, svg]
+----
+@startuml
+!theme plain
 
-_<(Optional) Fulfilled Requirements>_
+node "MaaS VM" {
+    node "Docker" {
+        component "menhir-webshop" as frontend
+        component "obelix-webshop" as webshop
+        component "obelix-basket" as basket
+        component "obelix-quarry" as quarry
+        
+        component "Zipkin" as zipkin
+        component "Prometheus" as prometheus
+        component "Watchtower" as watchtower
+    }
+}
 
-_<(optional) Open Issues/Problems/Risks>_
+cloud "GitHub" {
+    component "Container Registry\n(ghcr.io)" as ghcr
+    component "GitHub Actions\n(CI/CD)" as actions
+}
 
+actor User
 
+User --> frontend : ":80"
+frontend --> webshop : ":8080"
+webshop --> basket : ":8081"
+webshop --> quarry : ":8082"
 
+basket --> zipkin : "traces"
+quarry --> zipkin : "traces"
+webshop --> zipkin : "traces"
 
-==== <Name black box 2>
+prometheus --> basket : "scrape :8080"
+prometheus --> quarry : "scrape :8080"
+prometheus --> webshop : "scrape :8080"
 
-_<black box template>_
+watchtower --> ghcr : "poll every 30s"
+actions --> ghcr : "push images"
 
-==== <Name black box n>
+@enduml
+----
 
-_<black box template>_
+==== Container Services
 
+[cols="2,1,3"]
+|===
+|Service |Port |Purpose
 
-==== <Name interface 1>
+|menhir-webshop
+|80
+|Frontend web application (static files)
 
-...
+|obelix-webshop
+|8080
+|Main backend API
 
-==== <Name interface m>
+|obelix-basket
+|8081
+|Basket/cart microservice
 
+|obelix-quarry
+|8082
+|Product catalog microservice
 
+|Zipkin
+|9411
+|Distributed tracing
 
-=== Level 2
+|Prometheus
+|9090
+|Metrics collection (5s scrape interval)
 
-==== White Box _<building block 1>_
+|Watchtower
+|—
+|Auto-updates containers every 30s
+|===
 
-_<white box template>_
+==== CI/CD Pipeline
 
-==== White Box _<building block 2>_
+// TODO: Describe pipeline triggers and workflow
 
+[cols="1,3"]
+|===
+|Stage |Description
 
-_<white box template>_
+|Build
+|GitHub Actions builds Docker images
 
-...
+|Push
+|Images pushed to GitHub Container Registry
 
-==== White Box _<building block m>_
+|Deploy
+|Watchtower detects new images and redeploys automatically
+|===
 
+==== Operational Characteristics
 
-_<white box template>_
+Automatic Updates::
+Watchtower polls ghcr.io every 30 seconds. When a new `:latest` image is detected, the container is automatically replaced.
 
+Observability::
+* **Tracing**: All backend services send traces to Zipkin
+* **Metrics**: Prometheus scrapes `/actuator/prometheus` every 5 seconds
 
+Data Persistence::
+None. All data is ephemeral and lost when the VM is reprovisioned.
 
-=== Level 3
-
-==== White Box <_building block x.1_>
-
-_<white box template>_
-
-
-==== White Box <_building block x.2_>
-
-_<white box template>_
-
-
-==== White Box <_building block y.1_>
-
-_<white box template>_
+// TODO: Add information about VM specs, network access, and security once available
