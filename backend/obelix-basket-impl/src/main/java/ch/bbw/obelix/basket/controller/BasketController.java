@@ -15,6 +15,11 @@ public class BasketController implements BasketApi {
     private final BasketService basketService;
 
     @Override
+    public BasketDto getBasket() {
+        return basketService.getBasket();
+    }
+
+    @Override
     public BasketDto offer(BasketDto.BasketItem basketItem) {
         return basketService.offer(basketItem);
     }

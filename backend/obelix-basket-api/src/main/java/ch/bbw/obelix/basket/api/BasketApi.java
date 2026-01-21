@@ -10,6 +10,9 @@ import java.util.UUID;
 
 public interface BasketApi {
 
+    @GetExchange("/api/basket")
+    public BasketDto getBasket();
+
     @GetExchange("/api/basket/offer")
     public BasketDto offer(@RequestBody BasketDto.BasketItem basketItem);
 
