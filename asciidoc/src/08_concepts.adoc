@@ -25,6 +25,59 @@ ifndef::imagesdir[:imagesdir: ../images]
 * **Metriken:** Basis-Metriken wie Request-Dauer, Error-Rate, Anzahl Requests, DB-Latenzen.
 * **Tracing (optional):** Verfolgbarkeit über Services hinweg via Correlation-Id.
 
+
+
+=== _CI/CD Pipeline Concept_
+
+==== Motivation
+
+The application consists of multiple Spring Boot–based microservices that are developed and maintained independently.
+To ensure consistent quality and reliable delivery, an automated CI/CD pipeline is required.
+
+The CI/CD pipeline addresses the following needs:
+
+* Early detection of errors through automated testing
+* Consistent and reproducible builds for all microservices
+* Fast feedback for developers on code changes
+* Automated creation and delivery of container images
+* Centralized storage of deployment artifacts in GitHub Container Registry (GHCR)
+
+Manual testing and manual container builds would be error-prone, slow, and difficult to scale in a microservice-based architecture.
+
+---
+
+==== Solution
+
+A centralized CI/CD pipeline is implemented using GitHub Actions and defined as code within the repository.
+
+The pipeline follows a simple and clear workflow:
+
+* Source code changes are pushed to the repository
+* Automated tests are executed in the CI pipeline
+* Container images are built only if all tests pass
+* Successfully built images are pushed to GitHub Container Registry (GHCR)
+
+This ensures that only tested and verified artifacts are published and available for deployment.
+
+===== CI/CD Workflow Overview
+
+[plantuml, ci-cd-pipeline, png]
+----
+@startuml
+actor Developer
+
+Developer -> GitRepository : Push Code
+GitRepository -> CICDPipeline : Trigger Pipeline
+
+CICDPipeline -> CICDPipeline : Build & Test
+
+alt Tests successful
+    CICDPipeline -> GHCR : Build & Push Docker Image
+else Tests failed
+    CICDPipeline -> Developer : Pipeline fails\n(no deployment)
+end
+@enduml
+----
 === Konfiguration & Secrets
 
 * **Konfigurationsquellen:** Default-Werte im Code, umgebungsspezifische Werte per ENV (z. B. API-URL, DB-URL).
