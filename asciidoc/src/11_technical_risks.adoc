@@ -1,5 +1,6 @@
 === Backend / Microservices
 
+
 ==== *Potential Issues*
 
 [cols="1,2,1", options="header"]
@@ -9,6 +10,7 @@
 | *No Centralized Authentication*
 | Each microservice can currently be accessed independently. Without a centralized authentication and authorization concept, this poses a significant security risk.
 | Critical
+
 
 | *Missing Service-to-Service Security*
 | Internal communication between microservices is not secured (e.g. no mTLS, no token validation).
@@ -37,6 +39,7 @@
 [cols="1,2", options="header"]
 |===
 | Risk | Mitigation Strategy
+
 
 | *No Centralized Authentication*
 | Introduce a centralized authentication service (e.g. OAuth2 / OpenID Connect). JWT-based authentication via an API Gateway.
