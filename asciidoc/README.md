@@ -51,6 +51,7 @@
 [See more](https://docs.arc42.org/section-7)
 
 ## 08 Concepts
+
 - Teamübergreifende Standards
 - Beispiele:
   - Authentifizierung (z.B. JWT)
@@ -60,7 +61,11 @@
   
 [See more](https://docs.arc42.org/section-8)
 
-## 09 Concepts
+## 09 Architecture Decisions
+
+- Welche Option wurde gewählt? Und Warum
+- Welche Alternativen gab es?
+- Bekannte Risiken der Entscheidung
   
 [See more](https://docs.arc42.org/section-9)
 

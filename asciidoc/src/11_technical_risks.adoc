@@ -66,5 +66,56 @@ ifndef::imagesdir[:imagesdir: ../images]
 |**Mixed Image Tags**
 |cloud-init uses separate service images but pipeline builds single backend image.
 |Align cloud-init with actual pipeline output (`backend` instead of separate service images).
+=== Frontend
+
+==== *Mögliche Probleme*
+
+[cols="1,2,1", options="header"]
+|===
+| Risiko | Beschreibung | Priorität
+
+| *Keine Persistenz des Warenkorbs*
+| Der Warenkorb (Pinia Store) speichert Daten nur im Memory. Bei einem Page Refresh oder Browser-Schliessung gehen alle Warenkorb Daten verloren.
+| Hoch
+
+| *Fehlende Authentifizierung*
+| Der Admin-Bereich (`/admin`) ist ohne Login zugänglich. Jeder Benutzer kann auf die Admin-Funktionen zugreifen.
+| Kritisch
+
+| *Keine Loading States*
+| Bei zukünftigen API Calls fehlen Loading Indikatoren, was zu schlechter UX führen kann.
+| Mittel
+
+| *Keine Input-Validierung*
+| Benutzer Eingaben werden nicht validiert. Dies kann zu unerwarteten Fehlern führen.
+| Mittel
+
+| *Keine Unit-Tests*
+| Das Frontend hat keine automatisierten Tests. Änderungen können unbemerkt Fehler einführen.
+| Mittel
+
+|===
+
+==== *Lösungsansätze*
+
+[cols="1,2", options="header"]
+|===
+| Risiko | Lösungsansatz
+
+| *Keine Persistenz des Warenkorbs*
+| Implementierung von `localStorage` oder `sessionStorage` für den Pinia Store mittels `pinia-plugin-persistedstate`. Alternativ: Warenkorb im Backend speichern.
+
+| *Fehlende Authentifizierung*
+| JWT basierte Authentifizierung mit dem Backend. Rollenbasierte Zugriffskontrolle für Admin Bereich.
+
+| *Keine Loading States*
+| Einführung von Loading Flags in den Stores. Skeleton-Loader oder Progress-Indikatoren während API Calls.
+
+| *Keine Input-Validierung*
+| Verwendung von Vuetify's eingebauter Form-Validierung. Zusätzliche Validierung vor API Calls.
+
+| *Keine Unit-Tests*
+| Einführung von Vitest für Unit-Tests. Vue Test Utils für Komponenten-Tests.
+
 |===
 

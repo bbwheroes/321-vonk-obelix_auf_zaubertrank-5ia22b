@@ -10,10 +10,6 @@
     <div class="d-flex align-center ga-3">
       <v-chip variant="tonal"> Total stock: {{ totalStock }} </v-chip>
 
-      <v-btn variant="tonal" @click="$emit('reset')" :disabled="!hasChanges">
-        Reset
-      </v-btn>
-
       <v-btn color="primary" @click="$emit('save')" :disabled="!hasChanges">
         Save changes
       </v-btn>
@@ -24,8 +20,8 @@
 <script setup>
 defineProps({
   totalStock: Number,
-  hasChanges: Boolean
+  hasChanges: Boolean,
 });
 
-defineEmits(["save", "reset"]);
+defineEmits(["save"]);
 </script>
