@@ -3,19 +3,30 @@ info:
   title: OpenAPI definition
   version: v0
 servers:
-- url: http://127.0.0.1:8080
-  description: Generated server url
+  - url: http://127.0.0.1:8080
+    description: Generated server url
 paths:
   /api/basket/offer:
     put:
       tags:
-      - webshop-controller
+        - webshop-controller
+      summary: Add item to basket (via webshop)
+      description: |
+        Adds the given basket item to the basket and returns the updated basket.
+        This webshop variant accepts the item in the request body.
       operationId: offer
       requestBody:
+        description: Basket item to add.
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/BasketItem"
+            examples:
+              addPotion:
+                summary: Add one potion
+                value:
+                  name: "Magic Potion"
+                  count: 1
         required: true
       responses:
         "200":
@@ -24,25 +35,46 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/BasketDto"
+              examples:
+                updated:
+                  summary: Basket after adding an item
+                  value:
+                    items:
+                      - name: "Magic Potion"
+                        count: 1
   /api/basket/buy/{menhirId}:
     post:
       tags:
-      - webshop-controller
+        - webshop-controller
+      summary: Buy a menhir (via webshop)
+      description: Exchanges the current basket contents for the menhir identified by `menhirId`.
       operationId: exchangeFor
       parameters:
-      - name: menhirId
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
+        - name: menhirId
+          in: path
+          description: UUID of the menhir to buy.
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "7b2f6f60-8f3a-4d54-9f5d-3b4df2b0c3a1"
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              examples:
+                success:
+                  summary: Purchase succeeded
+                  value:
+                    status: "OK"
+                    message: "Purchase completed"
   /api:
     get:
       tags:
-      - webshop-controller
+        - webshop-controller
+      summary: Welcome message
+      description: Returns a simple welcome string from the webshop service.
       operationId: welcome
       responses:
         "200":
@@ -51,10 +83,16 @@ paths:
             '*/*':
               schema:
                 type: string
+              examples:
+                example:
+                  summary: Welcome text
+                  value: "Welcome to the Webshop API"
   /api/menhirs:
     get:
       tags:
-      - webshop-controller
+        - webshop-controller
+      summary: List menhirs (via webshop)
+      description: Returns all menhirs visible through the webshop.
       operationId: getAllMenhirs
       responses:
         "200":
@@ -65,22 +103,59 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/MenhirDto"
+              examples:
+                example:
+                  summary: Two menhirs
+                  value:
+                    - id: "7b2f6f60-8f3a-4d54-9f5d-3b4df2b0c3a1"
+                      weight: 1200.5
+                      stoneType: "GRANITE"
+                      decorativeness: "DECORATED"
+                      description: "A sturdy granite menhir with carved patterns."
+                    - id: "0f3f9b1e-5c0c-4c2d-9ac4-2d61a2c8b2d0"
+                      weight: 800.0
+                      stoneType: "LIMESTONE"
+                      decorativeness: "SIMPLE"
+                      description: "A simple limestone menhir."
   /:
     get:
       tags:
-      - webshop-controller
+        - webshop-controller
+      summary: Get basket (root)
+      description: Returns the current basket (root endpoint variant).
       operationId: getBasket_1
       responses:
         "200":
           description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BasketDto"
+              examples:
+                example:
+                  summary: Basket with one item
+                  value:
+                    items:
+                      - name: "Magic Potion"
+                        count: 2
   /api/basket:
     delete:
       tags:
-      - webshop-controller
+        - webshop-controller
+      summary: Clear/leave basket (via webshop)
+      description: Removes all items from the current basket.
       operationId: leave
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              examples:
+                cleared:
+                  summary: Basket cleared
+                  value:
+                    status: "OK"
+                    message: "Basket cleared"
 components:
   schemas:
     BasketItem:
@@ -88,14 +163,19 @@ components:
       properties:
         name:
           type: string
+          description: Display name of the basket item.
+          example: "Magic Potion"
         count:
           type: integer
           format: int32
+          description: Quantity of this item.
+          example: 2
     BasketDto:
       type: object
       properties:
         items:
           type: array
+          description: List of items currently in the basket.
           items:
             $ref: "#/components/schemas/BasketItem"
     MenhirDto:
@@ -104,18 +184,28 @@ components:
         id:
           type: string
           format: uuid
+          description: Unique identifier of the menhir.
+          example: "7b2f6f60-8f3a-4d54-9f5d-3b4df2b0c3a1"
         weight:
           type: number
           format: double
+          description: Weight of the menhir (unit depends on system; typically kilograms).
+          example: 1200.5
         stoneType:
           type: string
+          description: Stone material/type (free text in this API).
+          example: "GRANITE"
         decorativeness:
           type: string
+          description: Decorative quality level of the menhir.
           enum:
-          - PLAIN
-          - SIMPLE
-          - DECORATED
-          - ORNATE
-          - MASTERWORK
+            - PLAIN
+            - SIMPLE
+            - DECORATED
+            - ORNATE
+            - MASTERWORK
+          example: "DECORATED"
         description:
           type: string
+          description: Human-readable description of the menhir.
+          example: "A sturdy granite menhir with carved patterns."
