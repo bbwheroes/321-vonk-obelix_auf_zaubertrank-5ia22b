@@ -34,7 +34,7 @@ State is managed via a Pinia cart store.
 . The cart item component emits actions like `inc` / `dec`.
 . `App.vue` (or the cart item component) calls `cart.inc(id)` or `cart.dec(id)` in the store.
 . The store updates `qty` and removes items when quantity goes to zero.
-. Computed totals (`totalCount`, `totalPrice`) update automatically and the UI re-renders.
+. Computed totals (`totalCount`) update automatically and the UI re-renders.
 
 *Result:* Quantities and totals update instantly without a page reload.
 
