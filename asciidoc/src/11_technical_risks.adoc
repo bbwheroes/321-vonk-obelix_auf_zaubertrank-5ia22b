@@ -1,6 +1,74 @@
 === Backend / Microservices
 
-==== *Potential Issues*
+[[section-technical-risks]]
+== Risks and Technical Debts
+
+=== Infrastructure Risks
+
+[cols="1,2,2,2"]
+|===
+|Risk |Description |Probability |Mitigation
+
+|**Data Loss**
+|All data is stored in H2 in-memory database. Container restart or VM reprovisioning loses all data.
+|High (certain on restart)
+|Acceptable for demo project. Document that data is ephemeral.
+
+|**Single Point of Failure**
+|Single VM hosts all services. VM failure = complete outage.
+|Medium
+|Acceptable for school project. No HA requirements.
+
+|**Uncontrolled Deployments**
+|Watchtower auto-deploys any new `:latest` image without approval.
+|Medium
+|Use branch-based tags (`:main`) instead of `:latest`. Only main branch triggers deploy.
+
+|**VM Expiration**
+|MaaS VM expires after 1 month. Requires manual reprovisioning.
+|High (certain)
+|Document reprovisioning process. Keep cloud-init script in version control.
+
+|**Network Dependency**
+|VM must reach ghcr.io to pull images and receive updates.
+|Low
+|School network typically has internet access. No mitigation needed.
+
+|**Unknown Firewall Rules**
+|MaaS firewall configuration is managed by teacher, not documented.
+|Medium
+|Test all ports (80, 8080, 9090, 9411) after provisioning. Contact teacher if blocked.
+|===
+
+
+=== Technical Debt
+
+[cols="1,2,2"]
+|===
+|Debt |Description |Recommendation
+
+|**Hardcoded Image Names**
+|cloud-init.yaml contains placeholder `GITHUB_ORG` that must be manually replaced.
+|Update cloud-init.yaml with actual image paths before deployment.
+
+|**No Health Checks**
+|Docker Compose doesn't define health checks for containers.
+|Add `healthcheck` to services for better orchestration.
+
+|**No Secrets Management**
+|No mechanism for injecting secrets into containers.
+|Use Docker secrets or environment files if secrets are needed in future.
+
+|**No Backup Strategy**
+|No backup for Prometheus metrics data.
+|Acceptable for demo. Consider volume mounts if historical metrics needed.
+
+|**Mixed Image Tags**
+|cloud-init uses separate service images but pipeline builds single backend image.
+|Align cloud-init with actual pipeline output (`backend` instead of separate service images).
+=== Frontend
+
+==== *Mögliche Probleme*
 
 [cols="1,2,1", options="header"]
 |===

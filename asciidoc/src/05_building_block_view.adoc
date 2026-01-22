@@ -3,6 +3,157 @@ ifndef::imagesdir[:imagesdir: ../images]
 [[section-building-block-view]]
 == Building Block View
 
+=== Infrastructure Overview
+
+==== Deployment Environment
+
+The system runs on a **single VM** provisioned via the school-internal MaaS (Metal as a Service) platform.
+
+[cols="1,3"]
+|===
+|Aspect |Description
+
+|Platform
+|School MaaS
+
+|Lifetime
+|1 month (ephemeral, data is lost on reprovisioning)
+
+|Provisioning
+|cloud-init script (`cloud-init.yaml`)
+
+|Container Runtime
+|Docker with Docker Compose
+
+|Image Registry
+|GitHub Container Registry (ghcr.io)
+|===
+
+==== Infrastructure Diagram
+
+[plantuml, infrastructure-overview, svg]
+----
+@startuml
+!theme plain
+
+node "MaaS VM" {
+    node "Docker" {
+        component "menhir-webshop" as frontend
+        component "obelix-webshop" as webshop
+        component "obelix-basket" as basket
+        component "obelix-quarry" as quarry
+        
+        component "Zipkin" as zipkin
+        component "Prometheus" as prometheus
+        component "Watchtower" as watchtower
+    }
+}
+
+cloud "GitHub" {
+    component "Container Registry\n(ghcr.io)" as ghcr
+    component "GitHub Actions\n(CI/CD)" as actions
+}
+
+actor User
+
+User --> frontend : ":80"
+frontend --> webshop : ":8080"
+webshop --> quarry : ":8081"
+webshop --> basket : ":8082"
+
+basket --> zipkin : "traces"
+quarry --> zipkin : "traces"
+webshop --> zipkin : "traces"
+
+prometheus --> basket : "scrape :8080"
+prometheus --> quarry : "scrape :8080"
+prometheus --> webshop : "scrape :8080"
+
+watchtower --> ghcr : "poll every 30s"
+actions --> ghcr : "push images"
+
+@enduml
+----
+
+==== Container Services
+
+[cols="2,1,3"]
+|===
+|Service |Port |Purpose
+
+|menhir-webshop
+|80
+|Frontend web application (static files)
+
+|obelix-webshop
+|8080
+|Main backend API
+
+|obelix-quarry
+|8081
+|Product catalog microservice
+
+|obelix-basket
+|8082
+|Basket/cart microservice
+
+|Zipkin
+|9411
+|Distributed tracing
+
+|Prometheus
+|9090
+|Metrics collection (5s scrape interval)
+
+|Watchtower
+|—
+|Auto-updates containers every 30s
+|===
+
+==== CI/CD Pipeline
+
+The CI/CD pipeline runs on GitHub Actions with two workflows:
+
+**Backend Tests** (`backend-tests.yml`)::
+Triggered on any push to branches with changes in `backend/`. Runs integration tests using Docker Compose.
+
+**Build & Push** (`deploy.yml`)::
+Triggered on push to `main` and after successful backend tests. Builds and pushes Docker images.
+
+[cols="1,3"]
+|===
+|Stage |Description
+
+|Test
+|Backend integration tests run on every push
+
+|Build
+|GitHub Actions builds Docker images on push to `main`
+
+|Push
+|Images pushed to `ghcr.io/bbwheroes/backend` and `ghcr.io/bbwheroes/menhir-webshop`
+
+|Deploy
+|Watchtower detects new images and redeploys automatically (30s polling)
+|===
+
+==== Operational Characteristics
+
+Network Access::
+The VM is only accessible from the school-internal network.
+
+Automatic Updates::
+Watchtower polls ghcr.io every 30 seconds. When a new `:latest` image is detected, the container is automatically replaced.
+
+Observability::
+* **Tracing**: All backend services send traces to Zipkin
+* **Metrics**: Prometheus scrapes `/actuator/prometheus` every 5 seconds
+
+Data Persistence::
+Uses H2 in-memory database. All data is ephemeral and lost on container restart or VM reprovisioning.
+
+Access Control::
+SSH access is limited to the project owner (personal MaaS user account).
 Die Building Block View zeigt die statische Zerlegung des Systems in Bausteine sowie deren Abhängigkeiten.
 
 === Level 1: Whitebox Gesamtsystem (Backend)

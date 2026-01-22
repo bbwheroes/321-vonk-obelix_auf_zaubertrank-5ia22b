@@ -7,33 +7,168 @@ ifndef::imagesdir[:imagesdir: ../images]
 
 === Infrastructure Level 1
 
+[plantuml, deployment-overview, svg]
+----
+@startuml
+!theme plain
 
-_**<Overview Diagram>**_
+cloud "School Network" {
+    node "MaaS VM" as vm {
+        node "Docker Engine" {
+            artifact "menhir-webshop\n:80" as frontend
+            artifact "backend\n:8080" as backend
+            artifact "Zipkin\n:9411" as zipkin
+            artifact "Prometheus\n:9090" as prometheus
+            artifact "Watchtower" as watchtower
+        }
+    }
+    
+    actor "Student/Teacher" as user
+}
+
+cloud "Internet" {
+    node "GitHub" {
+        component "Actions\n(CI/CD)" as actions
+        database "Container Registry\nghcr.io" as ghcr
+    }
+}
+
+user --> frontend : "HTTP :80"
+user --> prometheus : "HTTP :9090"
+user --> zipkin : "HTTP :9411"
+frontend --> backend : "API calls"
+backend --> zipkin : "traces"
+prometheus --> backend : "scrape metrics"
+watchtower --> ghcr : "poll for updates"
+actions --> ghcr : "push images"
+
+@enduml
+----
 
 Motivation::
-
-_<explanation in text form>_
+The deployment uses a single VM provisioned via MaaS (Metal as a Service) to minimize infrastructure complexity for a school project. All services run as Docker containers, enabling consistent deployment and easy updates via Watchtower.
 
 Quality and/or Performance Features::
-
-_<explanation in text form>_
+* **Simplicity**: Single VM reduces operational overhead
+* **Auto-updates**: Watchtower polls every 30 seconds for new images
+* **Observability**: Built-in tracing (Zipkin) and metrics (Prometheus)
+* **Ephemeral**: 1-month lifetime, data loss is acceptable for demo purposes
 
 Mapping of Building Blocks to Infrastructure::
-_<description of the mapping>_
+
+[cols="2,2,2"]
+|===
+|Building Block |Container Image |Port
+
+|Frontend (menhir-webshop)
+|`ghcr.io/bbwheroes/menhir-webshop:main`
+|80
+
+|Backend (obelix services)
+|`ghcr.io/bbwheroes/backend:main`
+|8080
+
+|Tracing
+|`openzipkin/zipkin:latest`
+|9411
+
+|Metrics
+|`prom/prometheus:latest`
+|9090
+
+|Auto-updater
+|`containrrr/watchtower:latest`
+|—
+|===
 
 
 === Infrastructure Level 2
 
-==== _<Infrastructure Element 1>_
+==== MaaS VM
 
-_<diagram + explanation>_
+[cols="1,2"]
+|===
+|Specification |Value
 
-==== _<Infrastructure Element 2>_
+|OS
+|Ubuntu 24.04 LTS
 
-_<diagram + explanation>_
+|CPU
+|2 Cores
 
-...
+|RAM
+|2 GB
 
-==== _<Infrastructure Element n>_
+|Disk
+|20 GB
+|===
 
-_<diagram + explanation>_
+The VM is provisioned using a cloud-init script (`cloud-init.yaml`) that:
+
+1. Installs Docker via the convenience script (`get.docker.com`)
+2. Writes a Docker Compose file to `/opt/obelix/docker-compose.yml`
+3. Writes Prometheus configuration to `/opt/obelix/prometheus.yml`
+4. Starts all containers via `docker compose up -d`
+
+Network Access::
+* Only accessible from school-internal network
+* No public internet exposure
+* SSH access limited to project owner
+
+Lifetime::
+* VM runs for 1 month
+* Must be reprovisioned with cloud-init after expiration
+* All data is lost on reprovisioning (H2 in-memory database)
+
+==== GitHub Actions CI/CD
+
+Two workflows handle the build and deployment pipeline:
+
+[plantuml, cicd-pipeline, svg]
+----
+@startuml
+!theme plain
+
+|Developer|
+start
+:Push to branch;
+
+|GitHub Actions|
+if (backend/ changed?) then (yes)
+    :Run backend-tests.yml;
+    :Docker Compose integration tests;
+endif
+
+if (push to main?) then (yes)
+    :Run deploy.yml;
+    :Build backend image;
+    :Build frontend image;
+    :Push to ghcr.io;
+endif
+
+|MaaS VM|
+:Watchtower polls ghcr.io;
+if (new image?) then (yes)
+    :Pull new image;
+    :Restart container;
+endif
+
+stop
+@enduml
+----
+
+==== Prometheus Configuration
+
+Prometheus scrapes metrics from all backend services every 5 seconds:
+
+[source,yaml]
+----
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'backend'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['backend:8080']
+----
