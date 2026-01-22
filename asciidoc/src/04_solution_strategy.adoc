@@ -29,7 +29,7 @@ rectangle "Deployment Service\n(Image Polling & Runtime Startup)" as Deploy
 
 Developer -> GitHub : Push code / Pull Request
 GitHub -> Pipeline : Trigger pipeline
-Pipeline -> GHCR : Publish container images
+Pipeline ---> GHCR : Publish container images
 Deploy -> GHCR : Poll for new images
 Deploy -> Deploy : Pull image &\nstart containers
 @enduml
