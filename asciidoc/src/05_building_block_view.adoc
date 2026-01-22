@@ -60,8 +60,8 @@ actor User
 
 User --> frontend : ":80"
 frontend --> webshop : ":8080"
-webshop --> basket : ":8081"
-webshop --> quarry : ":8082"
+webshop --> quarry : ":8081"
+webshop --> basket : ":8082"
 
 basket --> zipkin : "traces"
 quarry --> zipkin : "traces"
@@ -91,13 +91,13 @@ actions --> ghcr : "push images"
 |8080
 |Main backend API
 
-|obelix-basket
-|8081
-|Basket/cart microservice
-
 |obelix-quarry
-|8082
+|8081
 |Product catalog microservice
+
+|obelix-basket
+|8082
+|Basket/cart microservice
 
 |Zipkin
 |9411
