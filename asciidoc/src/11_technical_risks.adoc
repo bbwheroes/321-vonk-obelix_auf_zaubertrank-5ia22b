@@ -1,27 +1,59 @@
-ifndef::imagesdir[:imagesdir: ../images]
+=== Backend / Microservices
 
-[[section-technical-risks]]
-== Risks and Technical Debts
+==== *Potential Issues*
 
+[cols="1,2,1", options="header"]
+|===
+| Risk | Description | Priority
 
-ifdef::arc42help[]
-[role="arc42help"]
-****
-.Contents
-A list of identified technical risks or technical debts, ordered by priority
+| *No Centralized Authentication*
+| Each microservice can currently be accessed independently. Without a centralized authentication and authorization concept, this poses a significant security risk.
+| Critical
 
-.Motivation
-“Risk management is project management for grown-ups” (Tim Lister, Atlantic Systems Guild.) 
+| *Missing Service-to-Service Security*
+| Internal communication between microservices is not secured (e.g. no mTLS, no token validation).
+| High
 
-This should be your motto for systematic detection and evaluation of risks and technical debts in the architecture, which will be needed by management stakeholders (e.g. project managers, product owners) as part of the overall risk analysis and measurement planning.
+| *Single Point of Failure*
+| Central components (e.g. API Gateway or database) are not designed redundantly and may bring down the entire system.
+| High
 
-.Form
-List of risks and/or technical debts, probably including suggested measures to minimize, mitigate or avoid risks or reduce technical debts.
+| *Lack of Monitoring and Logging*
+| There is no centralized logging or monitoring. Errors in individual services are difficult to trace.
+| High
 
+| *Unclear Service Boundaries*
+| Business logic is partially redundant or not clearly separated between services, which complicates maintenance and extensibility.
+| Medium
 
-.Further Information
+| *Missing Circuit Breaking*
+| When a service fails, dependent services may also become blocked or crash.
+| Medium
 
-See https://docs.arc42.org/section-11/[Risks and Technical Debt] in the arc42 documentation.
+|===
 
-****
-endif::arc42help[]
+==== *Mitigation Strategies*
+
+[cols="1,2", options="header"]
+|===
+| Risk | Mitigation Strategy
+
+| *No Centralized Authentication*
+| Introduce a centralized authentication service (e.g. OAuth2 / OpenID Connect). JWT-based authentication via an API Gateway.
+
+| *Missing Service-to-Service Security*
+| Secure internal communication using mTLS or signed service tokens.
+
+| *Single Point of Failure*
+| Design critical components redundantly. Use load balancers and replication.
+
+| *Lack of Monitoring and Logging*
+| Centralized logging (e.g. ELK Stack) and monitoring (Prometheus, Grafana). Health checks per service.
+
+| *Unclear Service Boundaries*
+| Clearly define responsibilities per microservice using Domain-Driven Design.
+
+| *Missing Circuit Breaking*
+| Apply resilience patterns such as circuit breakers, retries, and timeouts (e.g. Resilience4j).
+
+|===

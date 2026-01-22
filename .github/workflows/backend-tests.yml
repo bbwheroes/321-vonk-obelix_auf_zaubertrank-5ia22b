@@ -1,0 +1,63 @@
+name: 'Backend: Tests'
+
+on:
+  push:
+    branches:
+      - "**"
+    paths:
+      - "backend/**"
+  pull_request:
+    branches:
+      - "**"
+    paths:
+      - "backend/**"
+
+jobs:
+  backend-integration-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('obelix-*/**/*.gradle*') }}
+
+      - name: Build & Start Backend
+        run: docker compose -f docker-compose.test.yml up -d --build
+
+      - name: Wait for Backend to be Ready
+        run: |
+          for i in {1..30}; do
+            STATUS=$(curl -s http://localhost:8080/actuator/health | jq -r .status)
+            if [ "$STATUS" = "UP" ]; then
+              echo "Backend is ready"
+              exit 0
+            fi
+            echo "Waiting... ($i/30)"
+            sleep 2
+          done
+          echo "Backend failed to start in time"
+          docker compose -f docker-compose.test.yml logs
+          exit 1
+
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x backend/gradlew
+
+      - name: Run Integration Tests (Webshop)
+        working-directory: backend
+        run: ./gradlew :obelix-webshop:test --info
+
+      - name: Tear Down Backend
+        run: docker compose -f docker-compose.test.yml down

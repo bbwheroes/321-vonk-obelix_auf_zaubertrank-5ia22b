@@ -1,0 +1,92 @@
+#cloud-config
+package_update: true
+
+packages:
+  - ca-certificates
+  - curl
+
+users:
+  - default
+  - name: user
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPigHqCq2b6PY97MKVufWauUAB92lHBeMc9OIz3NVOYU jannis@Jannis-MacBook.lerain.net
+
+write_files:
+  - path: /opt/obelix/docker-compose.yml
+    permissions: '0644'
+    content: |
+      services:
+        obelix-basket:
+          image: ghcr.io/bbwheroes/obelix-basket-impl:latest
+          restart: unless-stopped
+          ports:
+            - "8082:8082"
+        
+        obelix-quarry:
+          image: ghcr.io/bbwheroes/obelix-quarry-impl:latest
+          restart: unless-stopped
+          ports:
+            - "8081:8081"
+        
+        obelix-webshop:
+          image: ghcr.io/bbwheroes/obelix-webshop:latest
+          restart: unless-stopped
+          ports:
+            - "8080:8080"
+        
+        menhir-webshop:
+          image: ghcr.io/bbwheroes/menhir-webshop:latest
+          restart: unless-stopped
+          ports:
+            - "80:80"
+        
+        zipkin:
+          image: openzipkin/zipkin:latest
+          restart: unless-stopped
+          ports:
+            - "9411:9411"
+        
+        prometheus:
+          image: prom/prometheus:latest
+          restart: unless-stopped
+          ports:
+            - "9090:9090"
+          volumes:
+            - /opt/obelix/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+        
+        watchtower:
+          image: containrrr/watchtower:latest
+          restart: unless-stopped
+          volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+          environment:
+            - WATCHTOWER_POLL_INTERVAL=30
+            - WATCHTOWER_CLEANUP=true
+
+  - path: /opt/obelix/prometheus.yml
+    permissions: '0644'
+    content: |
+      global:
+        scrape_interval: 5s
+      
+      scrape_configs:
+        - job_name: 'obelix-basket'
+          metrics_path: /actuator/prometheus
+          static_configs:
+            - targets: ['obelix-basket-impl:8082']
+        
+        - job_name: 'obelix-quarry'
+          metrics_path: /actuator/prometheus
+          static_configs:
+            - targets: ['obelix-quarry-impl:8081']
+        
+        - job_name: 'obelix-webshop'
+          metrics_path: /actuator/prometheus
+          static_configs:
+            - targets: ['obelix-webshop:8080']
+
+runcmd:
+  - curl -fsSL https://get.docker.com | sh
+  - sudo docker compose -f /opt/obelix/docker-compose.yml up -d
