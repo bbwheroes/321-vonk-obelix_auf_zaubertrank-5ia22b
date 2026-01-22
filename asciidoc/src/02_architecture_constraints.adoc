@@ -1,0 +1,61 @@
+ifndef::imagesdir[:imagesdir: ../images]
+
+== 2. Randbedingungen (Architecture Constraints)
+
+Dieses Kapitel beschreibt alle technischen Constraints,
+die den Architektur- und Implementationsspielraum des Obelix-Projekts beeinflussen.
+
+=== 2.1 Technische Constraints
+
+[cols="1,3", options="header"]
+|===
+| Constraint | Beschreibung
+
+| Architektur basiert auf mindestens drei Microservices
+| Die Gesamtanwendung muss in mindestens drei eigenständige Microservices aufgeteilt werden.
+
+| OpenAPI 3.x als API-Spezifikationsstandard
+| Alle Schnittstellen müssen als OAS 3.x definiert werden.
+
+| Code-first Ansatz für OpenAPI
+| Die OpenAPI-Spezifikation wird automatisch aus dem Code generiert (z.B. springdoc).
+
+| Vollständige OpenAPI-Dokumentation
+| Alle Properties müssen Beschreibungen und Beispiele im YAML besitzen.
+
+| Generierter OpenAPI-Client im Frontend
+| Das Frontend konsumiert die Microservices ausschliesslich über einen generierten Client.
+
+| Verwendung von Observability-Tools
+| Zipkin für Tracing, Prometheus für Metriken, Grafana als Visualisierung.
+
+| Auto-generierte Code-Samples aus Tests
+| Code-Beispiele in der Dokumentation müssen testbasiert generiert sein (Spring REST Docs).
+
+| CI-Pipeline für jeden Commit/PR
+| Jeder Commit/PR triggert einen automatischen Build und Testlauf.
+
+| Automatisiertes Deployment des main-Branches
+| Der main-Branch wird bei jedem Merge automatisch gebuilded und deployed.
+
+| Zielumgebung: BBW MaaS
+| Zielsystem ist die BBW MaaS Plattform; Risiken bzgl. Erreichbarkeit oder Konfiguration sind bekannt
+|===
+
+
+=== 2.2 Konventionen
+
+[cols="1,3", options="header"]
+|===
+| Constraint | Beschreibung
+
+| AsciiDoc als verpflichtendes Dokumentationsformat
+| Doku vollständig in AsciiDoc, inkl. Diagramme, Beispiele und Struktur.
+
+| PlantUML als Diagrammstandard
+| Alle Architekturdiagramme müssen als PlantUML eingebunden sein.
+
+| Saubere und vollständige OpenAPI-Beschreibungen
+| Beschreibungen und Beispiele sind verpflichtend zur Lesbarkeit.
+|===
+

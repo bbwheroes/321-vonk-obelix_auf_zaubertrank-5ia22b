@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  webshop:
+    build:
+      context: backend
+      dockerfile: obelix-webshop/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - quarry
+      - basket
+
+  quarry:
+    build:
+      context: backend
+      dockerfile: obelix-quarry-impl/Dockerfile
+    ports:
+      - "8081:8081"
+
+  basket:
+    build:
+      context: backend
+      dockerfile: obelix-basket-impl/Dockerfile
+    ports:
+      - "8082:8082"
+
+networks:
+  default:
+    driver: bridge
