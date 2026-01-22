@@ -3,28 +3,14 @@ info:
   title: OpenAPI definition
   version: v0
 servers:
-- url: http://localhost:8081
+- url: http://127.0.0.1:8082
   description: Generated server url
 paths:
-  /api/menhirs:
-    get:
+  /api/basket/buy/{menhirId}:
+    post:
       tags:
-      - quarry-controller
-      operationId: getAllMenhirs
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/MenhirDto"
-  /api/menhirs/{menhirId}:
-    get:
-      tags:
-      - quarry-controller
-      operationId: getMenhirById
+      - basket-controller
+      operationId: exchangeFor
       parameters:
       - name: menhirId
         in: path
@@ -35,45 +21,57 @@ paths:
       responses:
         "200":
           description: OK
+  /api/basket:
+    get:
+      tags:
+      - basket-controller
+      operationId: getBasket
+      responses:
+        "200":
+          description: OK
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/MenhirDto"
-  /api/quarry/{menhirId}:
+                $ref: "#/components/schemas/BasketDto"
     delete:
       tags:
-      - quarry-controller
-      operationId: deleteById
-      parameters:
-      - name: menhirId
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
+      - basket-controller
+      operationId: leave
       responses:
         "200":
           description: OK
+  /api/basket/offer:
+    get:
+      tags:
+      - basket-controller
+      operationId: offer
+      parameters:
+      - name: basketItem
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/BasketItem"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BasketDto"
 components:
   schemas:
-    MenhirDto:
+    BasketDto:
       type: object
       properties:
-        id:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/BasketItem"
+    BasketItem:
+      type: object
+      properties:
+        name:
           type: string
-          format: uuid
-        weight:
-          type: number
-          format: double
-        stoneType:
-          type: string
-        decorativeness:
-          type: string
-          enum:
-          - PLAIN
-          - SIMPLE
-          - DECORATED
-          - ORNATE
-          - MASTERWORK
-        description:
-          type: string
+        count:
+          type: integer
+          format: int32
