@@ -6,4 +6,6 @@ plugins {
 dependencies {
 	implementation project(':obelix-common')
 	implementation project(':obelix-quarry-api')
+
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0"
 }

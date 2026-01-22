@@ -1,0 +1,129 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://127.0.0.1:8082
+    description: Generated server url
+paths:
+  /api/basket/buy/{menhirId}:
+    post:
+      tags:
+        - basket-controller
+      summary: Buy a menhir from the basket
+      description: |
+        Exchanges the current basket contents for the menhir identified by `menhirId`.
+        Use this after you have added items to the basket via the offer endpoint.
+      operationId: exchangeFor
+      parameters:
+        - name: menhirId
+          in: path
+          description: UUID of the menhir to buy.
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "7b2f6f60-8f3a-4d54-9f5d-3b4df2b0c3a1"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              examples:
+                success:
+                  summary: Purchase succeeded
+                  value:
+                    status: "OK"
+                    message: "Purchase completed"
+  /api/basket:
+    get:
+      tags:
+        - basket-controller
+      summary: Get current basket
+      description: Returns the current basket and all items in it.
+      operationId: getBasket
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BasketDto"
+              examples:
+                example:
+                  summary: Basket with two items
+                  value:
+                    items:
+                      - name: "Magic Potion"
+                        count: 2
+                      - name: "Menhir Voucher"
+                        count: 1
+    delete:
+      tags:
+        - basket-controller
+      summary: Clear/leave basket
+      description: Removes all items from the current basket.
+      operationId: leave
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              examples:
+                cleared:
+                  summary: Basket cleared
+                  value:
+                    status: "OK"
+                    message: "Basket cleared"
+  /api/basket/offer:
+    get:
+      tags:
+        - basket-controller
+      summary: Add an item to the basket (offer)
+      description: |
+        Adds the given `basketItem` to the basket and returns the updated basket.
+        This endpoint expects the item as a query parameter.
+      operationId: offer
+      parameters:
+        - name: basketItem
+          in: query
+          description: Item to add to the basket (name + count).
+          required: true
+          schema:
+            $ref: "#/components/schemas/BasketItem"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BasketDto"
+              examples:
+                updated:
+                  summary: Basket after adding an item
+                  value:
+                    items:
+                      - name: "Magic Potion"
+                        count: 1
+components:
+  schemas:
+    BasketDto:
+      type: object
+      properties:
+        items:
+          type: array
+          description: List of items currently in the basket.
+          items:
+            $ref: "#/components/schemas/BasketItem"
+    BasketItem:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Display name of the basket item.
+          example: "Magic Potion"
+        count:
+          type: integer
+          format: int32
+          description: Quantity of this item.
+          example: 2

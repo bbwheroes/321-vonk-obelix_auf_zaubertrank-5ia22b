@@ -1,0 +1,214 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://127.0.0.1:8081
+    description: Generated server url
+paths:
+  /api/menhirs/{menhirId}:
+    get:
+      tags:
+        - quarry-controller
+      summary: Get menhir by ID
+      description: Returns a single menhir by its UUID.
+      operationId: getMenhirById
+      parameters:
+        - name: menhirId
+          in: path
+          description: UUID of the menhir to retrieve.
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "7b2f6f60-8f3a-4d54-9f5d-3b4df2b0c3a1"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MenhirDto"
+              examples:
+                example:
+                  summary: A decorated menhir
+                  value:
+                    id: "7b2f6f60-8f3a-4d54-9f5d-3b4df2b0c3a1"
+                    weight: 1200.5
+                    stoneType: "GRANITE"
+                    decorativeness: "DECORATED"
+                    description: "A sturdy granite menhir with carved patterns."
+    put:
+      tags:
+        - quarry-controller
+      summary: Update menhir
+      description: Updates the menhir identified by `menhirId` and returns the updated entity.
+      operationId: updateMenhir
+      parameters:
+        - name: menhirId
+          in: path
+          description: UUID of the menhir to update.
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "7b2f6f60-8f3a-4d54-9f5d-3b4df2b0c3a1"
+      requestBody:
+        description: New menhir data.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MenhirDto"
+            examples:
+              update:
+                summary: Update decorativeness and description
+                value:
+                  id: "7b2f6f60-8f3a-4d54-9f5d-3b4df2b0c3a1"
+                  weight: 1200.5
+                  stoneType: "GRANITE"
+                  decorativeness: "ORNATE"
+                  description: "Now features ornate engravings."
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MenhirDto"
+              examples:
+                updated:
+                  summary: Updated menhir
+                  value:
+                    id: "7b2f6f60-8f3a-4d54-9f5d-3b4df2b0c3a1"
+                    weight: 1200.5
+                    stoneType: "GRANITE"
+                    decorativeness: "ORNATE"
+                    description: "Now features ornate engravings."
+  /api/menhirs:
+    get:
+      tags:
+        - quarry-controller
+      summary: List all menhirs
+      description: Returns all menhirs currently available in the quarry.
+      operationId: getAllMenhirs
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MenhirDto"
+              examples:
+                example:
+                  summary: Two menhirs
+                  value:
+                    - id: "7b2f6f60-8f3a-4d54-9f5d-3b4df2b0c3a1"
+                      weight: 1200.5
+                      stoneType: "GRANITE"
+                      decorativeness: "DECORATED"
+                      description: "A sturdy granite menhir with carved patterns."
+                    - id: "0f3f9b1e-5c0c-4c2d-9ac4-2d61a2c8b2d0"
+                      weight: 800.0
+                      stoneType: "LIMESTONE"
+                      decorativeness: "SIMPLE"
+                      description: "A simple limestone menhir."
+    post:
+      tags:
+        - quarry-controller
+      summary: Create menhir
+      description: Creates a new menhir and returns the created entity.
+      operationId: createMenhir
+      requestBody:
+        description: Menhir data to create.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MenhirDto"
+            examples:
+              create:
+                summary: Create a plain menhir
+                value:
+                  weight: 500.0
+                  stoneType: "SANDSTONE"
+                  decorativeness: "PLAIN"
+                  description: "A small plain sandstone menhir."
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MenhirDto"
+              examples:
+                created:
+                  summary: Created menhir
+                  value:
+                    id: "c4c5d3f0-2b3f-4b0a-9aa6-7e56fd2b8b7a"
+                    weight: 500.0
+                    stoneType: "SANDSTONE"
+                    decorativeness: "PLAIN"
+                    description: "A small plain sandstone menhir."
+  /api/quarry/{menhirId}:
+    delete:
+      tags:
+        - quarry-controller
+      summary: Delete menhir
+      description: Deletes the menhir identified by `menhirId`.
+      operationId: deleteById
+      parameters:
+        - name: menhirId
+          in: path
+          description: UUID of the menhir to delete.
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "7b2f6f60-8f3a-4d54-9f5d-3b4df2b0c3a1"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              examples:
+                deleted:
+                  summary: Deleted
+                  value:
+                    status: "OK"
+                    message: "Menhir deleted"
+components:
+  schemas:
+    MenhirDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier of the menhir.
+          example: "7b2f6f60-8f3a-4d54-9f5d-3b4df2b0c3a1"
+        weight:
+          type: number
+          format: double
+          description: Weight of the menhir (unit depends on system; typically kilograms).
+          example: 1200.5
+        stoneType:
+          type: string
+          description: Stone material/type (free text in this API).
+          example: "GRANITE"
+        decorativeness:
+          type: string
+          description: Decorative quality level of the menhir.
+          enum:
+            - PLAIN
+            - SIMPLE
+            - DECORATED
+            - ORNATE
+            - MASTERWORK
+          example: "DECORATED"
+        description:
+          type: string
+          description: Human-readable description of the menhir.
+          example: "A sturdy granite menhir with carved patterns."
