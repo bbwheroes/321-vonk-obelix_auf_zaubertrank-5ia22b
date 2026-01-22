@@ -104,3 +104,70 @@ BasketDto "1" *-- "*" BasketItem
 * **BasketDto:** Der Korb mit einer Liste von Sachen.
 * **BasketItem:** Ein Gegenstand im Korb (Name und Anzahl).
 * **MenhirDto:** Ein Hinkelstein.
+
+---
+
+== Frontend Architektur (Vue.js)
+
+=== Level 1: Frontend Komponenten-Übersicht
+
+Das Frontend ist eine Vue.js-Anwendung, die die Benutzeroberfläche für den Webshop bereitstellt. Die Komponenten folgen einer hierarchischen Struktur.
+
+[plantuml, frontend-overview, svg]
+----
+@startuml
+component "App.vue" <<RootComponent>> as App
+component "UserView.vue" <<Container>> as UserView
+component "AdminView.vue" <<Container>> as AdminView
+component "Shop.vue" <<FeatureComponent>> as Shop
+component "Card.vue" <<DisplayComponent>> as Card
+component "BasketItem.vue" <<CartComponent>> as BasketItem
+
+App --> UserView
+App --> AdminView
+UserView --> Shop
+UserView --> BasketItem
+Shop --> Card
+Card --> Shop : "Produkt zum Korb hinzufügen"
+@enduml
+----
+
+**Beschreibung der Komponenten:**
+* **App.vue:** Root-Komponente mit Router und Korb-Sidebar. Verwaltet die Navigation zwischen Benutzer- und Admin-Bereich.
+* **UserView.vue:** Container für die Benutzer-Shopping-Seite. Verbindet Shop und Warenkorb.
+* **AdminView.vue:** Container für die Admin-Verwaltungsfunktionen.
+* **Shop.vue:** Zeigt alle Produkte in einem Grid an und sendet ausgewählte Produkte in den Warenkorb.
+* **Card.vue:** Einzelne Produktkarte mit Bild, Titel und "In den Korb"-Button.
+* **BasketItem.vue:** Warenkorbposition in der Sidebar mit Menge erhöhen/verringern Funktionen.
+
+=== Level 2: Komponenten-Interaktionen
+
+==== Benutzer-Shopping-Flow
+
+[plantuml, shopping-flow, svg]
+----
+@startuml
+actor User
+participant Shop
+participant Card
+participant "cart.js\n(Store)" as Store
+participant "BasketItem"
+
+User -> Card: Klick "In den Korb"
+Card -> Shop: emitAddToCart(product)
+Shop -> Store: Produkt hinzufügen
+Store -> BasketItem: Update
+BasketItem -> User: Anzeige Menge + Preis
+@enduml
+----
+
+**Ablauf:**
+1. Benutzer wählt ein Produkt aus der **Shop.vue** Produktliste.
+2. **Card.vue** zeigt die Produktdetails und hat einen "In den Korb"-Button.
+3. Klick auf den Button sendet das Produkt an den Warenkorb (State Management via Pinia Store).
+4. **BasketItem.vue** zeigt den Warenkorbeintrag mit Funktionen zum Erhöhen/Verringern der Menge.
+5. Der Warenkorb wird in der **App.vue** Sidebar aktualisiert.
+
+==== Admin-Verwaltung
+
+Die **AdminView.vue** bietet Admin-Funktionen für die Verwaltung des Inventars über die Backend-APIs.
