@@ -1,20 +1,32 @@
-version: '3.9'
+version: "3.9"
 
 services:
-  backend:
-    environment:
-      MANAGEMENT_TRACING_ENABLED: "false"
-      SPRING_ZIPKIN_ENABLED: "false"
+  webshop:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: backend
+      dockerfile: obelix-webshop/Dockerfile
     ports:
-      - "8080:8080"   # webshop
-      - "8081:8081"   # quarry service
-      - "8082:8082"   # basket service
-    networks:
-      - backend-network
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - quarry
+      - basket
+
+  quarry:
+    build:
+      context: backend
+      dockerfile: obelix-quarry-impl/Dockerfile
+    ports:
+      - "8081:8081"
+
+  basket:
+    build:
+      context: backend
+      dockerfile: obelix-basket-impl/Dockerfile
+    ports:
+      - "8082:8082"
 
 networks:
-  backend-network:
+  default:
     driver: bridge

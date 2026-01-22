@@ -6,8 +6,8 @@
 </template>
 
 <script setup>
-import AboutSection from '../components/AboutSection.vue'
-import Shop from '../components/Shop.vue'
+import AboutSection from '../components/AboutSection.vue';
+import Shop from '../components/Shop.vue';
 
-defineEmits(['add-to-cart'])
+defineEmits(['add-to-cart']);
 </script>

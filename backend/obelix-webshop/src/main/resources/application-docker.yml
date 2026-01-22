@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: webshop
+server:
+  port: 8080
+microService:
+  quarryService: http://quarry:8081
+  basketService: http://basket:8082
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus

@@ -3,15 +3,27 @@ ifndef::imagesdir[:imagesdir: ../images]
 [[section-concepts]]
 == Cross-cutting Concepts
 
-=== _<Concept 1>_
+=== Security & Datenschutz
 
-_<explanation>_
+* **Authentifizierung/Session:** Zugriff auf geschützte Funktionen (z. B. Checkout, Admin) nur nach Login. Session-Handling/JWT (je nach Architektur) mit klarer Gültigkeitsdauer und Logout.
+* **Autorisierung:** Rollen/Permissions (z. B. Admin vs. Kunde). Jede Server-Operation prüft Rechte serverseitig.
+* **Input-Validation:** Alle Eingaben (Forms, Query-Params, JSON) werden serverseitig validiert; Client-Validierung ist nur UX.
+* **Sichere Kommunikation:** TLS für alle Umgebungen. Keine Secrets im Repo, Konfiguration via ENV/Secret-Store.
+* **Datenschutz:** Minimalprinzip bei gespeicherten Personendaten, klare Löschkonzepte (z. B. Testdaten, Logs).
 
+=== Fehlerbehandlung & Resilienz
 
+* **Fehlerklassen:** Unterscheidung zwischen Validierungsfehlern (4xx), Auth-Fehlern (401/403) und Systemfehlern (5xx).
+* **Standard-Fehlerformat:** Einheitliche Error-Responses (Code, Message, Correlation-Id, optionale Details).
+* **Retry/Timeouts:** Externe Calls immer mit Timeout; Retries nur bei transienten Fehlern (z. B. Netzwerk, 429/503) und mit Backoff.
+* **Graceful Degradation:** UI zeigt sinnvolle Empty-States (z. B. Warenkorb leer) und bietet Wiederholen bei Netzwerkfehlern.
 
-=== _<Concept 2>_
+=== Logging, Monitoring & Observability
 
-_<explanation>_
+* **Strukturiertes Logging:** JSON oder klar formatierte Logs mit Level, Timestamp, Service, Request-Id/Correlation-Id.
+* **Log-Level-Regeln:** debug nur lokal, info/warn/error in Test/Prod. Keine sensitiven Daten in Logs (Passwörter, Tokens).
+* **Metriken:** Basis-Metriken wie Request-Dauer, Error-Rate, Anzahl Requests, DB-Latenzen.
+* **Tracing (optional):** Verfolgbarkeit über Services hinweg via Correlation-Id.
 
 
 
@@ -66,3 +78,47 @@ else Tests failed
 end
 @enduml
 ----
+=== Konfiguration & Secrets
+
+* **Konfigurationsquellen:** Default-Werte im Code, umgebungsspezifische Werte per ENV (z. B. API-URL, DB-URL).
+* **Secrets:** Passwörter/Keys nur in Secret-Store oder ENV (nicht im Git). Rotationsfähig.
+* **Feature-Toggles:** Optional für experimentelle Features (z. B. neue Checkout-Variante).
+
+=== API-Design & Datenformate
+
+* **REST-Konventionen:** Klare Ressourcen, saubere HTTP-Statuscodes, idempotente Methoden (PUT/DELETE), Pagination für Listen.
+* **Versionierung:** Falls nötig via URL (/api/v1) oder Header.
+* **DTOs:** Trennung zwischen internen Modellen und API-DTOs, um Breaking Changes zu vermeiden.
+* **Fehlerformat:** Einheitlich (siehe Fehlerbehandlung), damit Frontend konsistent reagieren kann.
+
+=== Persistenz & Datenkonsistenz
+
+* **Transaktionen:** Kritische Writes (z. B. Bestellung anlegen) transaktional; konsistente Zustandsübergänge.
+* **Eindeutigkeit:** Business-Keys (z. B. productNumber, orderNumber) mit DB-Constraints.
+* **Migrationen:** Schema-Änderungen über Migrationstool (z. B. Flyway/Liquibase) und reproduzierbare Setups.
+* **Testdaten:** Seed/Fixtures für lokale Entwicklung und Tests.
+
+=== Frontend-UX & Accessibility
+
+* **UI-States:** Loading/Empty/Error States für jede relevante Ansicht (Produktliste, Warenkorb, Checkout).
+* **Responsiveness:** Layout funktioniert auf Mobile/Tablet/Desktop, keine horizontalen Overflows.
+* **Accessibility Basics:** Tastaturbedienung, sinnvolle Labels/ARIA, ausreichende Kontraste, Fokus sichtbar.
+
+=== Performance
+
+* **Frontend:** Optimierte Initial-Loads (Code-Splitting/Tree-Shaking), Bilder komprimiert, Caching-Strategien.
+* **Backend:** Paging bei großen Listen, Indizes auf Filterfeldern, sinnvolle Cache-Header wo möglich.
+* **Messwerte:** Konkrete Akzeptanzkriterien werden in den Quality Requirements festgehalten (z. B. LCP, Response-Zeiten).
+
+=== Teststrategie & Quality Gates
+
+* **Unit-Tests:** Businesslogik und Utilities.
+* **Integration-Tests:** API + DB, wichtige Use-Cases (z. B. Add-to-cart, Checkout).
+* **E2E (optional):** Kritische Happy-Paths im Frontend.
+* **CI-Gates:** Linter/Formatter, Tests, Build; Merge nur bei grünen Checks.
+
+=== Build, Deployment & Versionierung
+
+* **Build reproduzierbar:** Lockfiles/Dependencies fixiert, saubere Build-Skripte.
+* **Artefakte:** Versionierte Builds (z. B. Docker Images oder dist bundle).
+* **Konventionen:** Semantische Versionen oder klarer Tagging-Standard, nachvollziehbare Changelogs.
