@@ -1,90 +1,106 @@
 ifndef::imagesdir[:imagesdir: ../images]
 
 [[section-building-block-view]]
-
-
 == Building Block View
 
-=== Whitebox Overall System
+Die Building Block View zeigt die statische Zerlegung des Systems in Bausteine sowie deren Abhängigkeiten.
 
-_**<Overview Diagram>**_
+=== Level 1: Whitebox Gesamtsystem (Backend)
 
-Motivation::
+Hier beschreiben wir die wichtigsten Teile des Systems und wie sie interagieren.
 
-_<text explanation>_
+[plantuml, level1-overview, svg]
+----
+@startuml
+component "Basket API" <<Subsystem>> as Basket
+component "Quarry API" <<Subsystem>> as Quarry
 
-Contained Building Blocks::
-_<Description of contained building block (black boxes)>_
+Basket ..> Quarry : "nutzt (Validierung & Bestandsprüfung)"
+@enduml
+----
 
-Important Interfaces::
-_<Description of important interfaces>_
+**Beschreibung der Subsysteme:**
+* **Basket API:** Verwaltet den Einkaufskorb und die Logik für den Tauschprozess.
+* **Quarry API:** Verwaltet die Hinkelsteine und den Zugriff auf den Steinbruch.
 
-==== <Name black box 1>
+---
 
-_<Purpose/Responsibility>_
+=== Level 2: Whitebox der APIs
 
-_<Interface(s)>_
+In diesem Level zeigen wir die interne Struktur der APIs, unterteilt in logische Building Blocks (Module).
 
-_<(Optional) Quality/Performance Characteristics>_
+==== Basket API (Warenkorb)
 
-_<(Optional) Directory/File Location>_
+Die Basket API verwaltet den Einkaufskorb. Man kann sehen, was drin ist, Sachen reinlegen, alles rauswerfen oder den Inhalt gegen einen Stein tauschen.
 
-_<(Optional) Fulfilled Requirements>_
+[plantuml, level2-basket, svg]
+----
+@startuml
+package "Basket API" {
+    [BasketController] as Controller
+    [BasketService] as Service
+    [BasketRepository] as Repo
+}
+Controller -> Service
+Service -> Repo
+@enduml
+----
 
-_<(optional) Open Issues/Problems/Risks>_
+**Wichtige Schnittstellen (Interfaces):**
+* `GET /api/basket`: Zeigt den Inhalt des Korbs.
+* `GET /api/basket/offer`: Legt etwas in den Korb.
+* `DELETE /api/basket`: Leert den Korb.
+* `POST /api/basket/buy/{menhirId}`: Tauscht den Korb-Inhalt gegen den Stein mit der ID `menhirId`.
 
+==== Quarry API (Steinbruch)
 
+Die Quarry API verwaltet die Hinkelsteine.
 
+[plantuml, level2-quarry, svg]
+----
+@startuml
+package "Quarry API" {
+    [QuarryController] as Controller
+    [QuarryService] as Service
+    [QuarryRepository] as Repo
+}
+Controller -> Service
+Service -> Repo
+@enduml
+----
 
-==== <Name black box 2>
+**Schnittstellen:**
+* `GET /api/menhirs`: Zeigt alle Steine.
+* `GET /api/menhirs/{menhirId}`: Zeigt einen bestimmten Stein.
+* `POST /api/menhirs`: Erstellt einen neuen Stein.
+* `PUT /api/menhirs/{menhirId}`: Ändert einen Stein.
+* `DELETE /api/quarry/{menhirId}`: Löscht einen Stein.
 
-_<black box template>_
+---
 
-==== <Name black box n>
+=== Level 3: Whitebox Datenstrukturen
 
-_<black box template>_
+Hier werden die internen Bausteine (Klassen/DTOs) detailliert, die für den Datenaustausch genutzt werden.
 
+[plantuml, level3-data, svg]
+----
+@startuml
+class BasketDto {
+    +List<BasketItem> items
+}
+class BasketItem {
+    +String name
+    +Integer amount
+}
+class MenhirDto {
+    +Long menhirId
+    +String name
+}
+BasketDto "1" *-- "*" BasketItem
+@enduml
+----
 
-==== <Name interface 1>
-
-...
-
-==== <Name interface m>
-
-
-
-=== Level 2
-
-==== White Box _<building block 1>_
-
-_<white box template>_
-
-==== White Box _<building block 2>_
-
-
-_<white box template>_
-
-...
-
-==== White Box _<building block m>_
-
-
-_<white box template>_
-
-
-
-=== Level 3
-
-==== White Box <_building block x.1_>
-
-_<white box template>_
-
-
-==== White Box <_building block x.2_>
-
-_<white box template>_
-
-
-==== White Box <_building block y.1_>
-
-_<white box template>_
+**Wichtige Datenobjekte:**
+* **BasketDto:** Der Korb mit einer Liste von Sachen.
+* **BasketItem:** Ein Gegenstand im Korb (Name und Anzahl).
+* **MenhirDto:** Ein Hinkelstein.

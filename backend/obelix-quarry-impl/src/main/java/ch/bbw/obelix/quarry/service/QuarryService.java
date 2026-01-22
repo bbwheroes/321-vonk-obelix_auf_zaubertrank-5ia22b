@@ -3,8 +3,8 @@ package ch.bbw.obelix.quarry.service;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 
-import ch.bbw.obelix.quarry.api.entity.MenhirEntity;
-import ch.bbw.obelix.quarry.api.repository.MenhirRepository;
+import ch.bbw.obelix.quarry.entity.MenhirEntity;
+import ch.bbw.obelix.quarry.repository.MenhirRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

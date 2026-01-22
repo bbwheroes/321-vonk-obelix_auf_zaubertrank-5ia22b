@@ -1,5 +1,59 @@
-ifndef::imagesdir[:imagesdir: ../images]
+=== Backend / Microservices
 
-[[section-technical-risks]]
-== Risks and Technical Debts
+==== *Potential Issues*
 
+[cols="1,2,1", options="header"]
+|===
+| Risk | Description | Priority
+
+| *No Centralized Authentication*
+| Each microservice can currently be accessed independently. Without a centralized authentication and authorization concept, this poses a significant security risk.
+| Critical
+
+| *Missing Service-to-Service Security*
+| Internal communication between microservices is not secured (e.g. no mTLS, no token validation).
+| High
+
+| *Single Point of Failure*
+| Central components (e.g. API Gateway or database) are not designed redundantly and may bring down the entire system.
+| High
+
+| *Lack of Monitoring and Logging*
+| There is no centralized logging or monitoring. Errors in individual services are difficult to trace.
+| High
+
+| *Unclear Service Boundaries*
+| Business logic is partially redundant or not clearly separated between services, which complicates maintenance and extensibility.
+| Medium
+
+| *Missing Circuit Breaking*
+| When a service fails, dependent services may also become blocked or crash.
+| Medium
+
+|===
+
+==== *Mitigation Strategies*
+
+[cols="1,2", options="header"]
+|===
+| Risk | Mitigation Strategy
+
+| *No Centralized Authentication*
+| Introduce a centralized authentication service (e.g. OAuth2 / OpenID Connect). JWT-based authentication via an API Gateway.
+
+| *Missing Service-to-Service Security*
+| Secure internal communication using mTLS or signed service tokens.
+
+| *Single Point of Failure*
+| Design critical components redundantly. Use load balancers and replication.
+
+| *Lack of Monitoring and Logging*
+| Centralized logging (e.g. ELK Stack) and monitoring (Prometheus, Grafana). Health checks per service.
+
+| *Unclear Service Boundaries*
+| Clearly define responsibilities per microservice using Domain-Driven Design.
+
+| *Missing Circuit Breaking*
+| Apply resilience patterns such as circuit breakers, retries, and timeouts (e.g. Resilience4j).
+
+|===

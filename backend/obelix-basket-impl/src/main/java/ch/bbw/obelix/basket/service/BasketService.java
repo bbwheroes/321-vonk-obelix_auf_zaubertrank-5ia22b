@@ -9,6 +9,7 @@ import ch.bbw.obelix.basket.api.dto.BasketDto;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import ch.bbw.obelix.quarry.api.dto.DecorativenessDto;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.StandardException;
@@ -30,7 +31,8 @@ public class BasketService {
 	@Lazy
 	private final QuarryWebClientService quarryWebclient;
 
-	private BasketDto basket;
+	@Getter
+    private BasketDto basket;
 
 	static <T> List<T> append(List<T> immutableList, T element) {
 		var tmpList = new ArrayList<>(immutableList);
@@ -38,7 +40,7 @@ public class BasketService {
 		return Collections.unmodifiableList(tmpList);
 	}
 
-	public BasketDto offer(@NonNull BasketDto.BasketItem basketItem) {
+    public BasketDto offer(@NonNull BasketDto.BasketItem basketItem) {
 		basket = basket.withItems(append(basket.items(), basketItem));
 		return basket;
 	}
