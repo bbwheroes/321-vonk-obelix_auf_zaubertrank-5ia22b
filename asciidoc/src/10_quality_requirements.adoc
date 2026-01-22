@@ -3,8 +3,68 @@ ifndef::imagesdir[:imagesdir: ../images]
 [[section-quality-scenarios]]
 == Quality Requirements
 
-
 === Quality Requirements Overview
 
+Die folgenden Quality Requirements fokussieren auf **Performance** und **User Experience (UX)** fuer das Frontend (Webshop).
+Alle Kriterien sind so formuliert, dass sie messbar oder klar pruefbar sind.
+
+*Performance (Zielwerte)*
+- **Interaktionslatenz:** Reaktion auf Klicks (z. B. "In den Warenkorb") sichtbar <= 150 ms
+- **Flüssige UI:** Scroll/Animationen >= 50–60 FPS unter typischer Nutzung
+- **Bundle/Assets:** Lazy Loading für Route-Views, Bilder optimiert (z. B. WebP), Caching aktiv
+- **Netzwerk:** Keine unnötigen Requests; API Calls gebündelt/gedrosselt wo sinnvoll
+
+*UX (Zielwerte)*
+- **Klarer Warenkorb-Flow:** Hinzufuegen/Entfernen/Aendern von Mengen ist eindeutig
+- **Responsives Layout:** Bedienbar ab 360px Breite (Mobile) bis Desktop; keine horizontalen Scrollbars
+- **Barrierefreiheit (Minimum):** Tastaturbedienung fuer Hauptfunktionen, sinnvolle Labels/ARIA fuer Icons
+- **Konsistentes Design:** Einheitliche Komponenten, Abstaende, Typografie und visuelle Hierarchie
 
 === Quality Scenarios
+
+Kurze Quality-Szenarien fuer das Frontend.
+
+[cols="1,2,2,2",options="header"]
+|===
+|Quality Attribut |Auslöser |Erwartete Response |Messung / Akzeptanzkriterium
+
+|Performance – Erstladen
+|Startseite wird zum ersten Mal geöffnet (4G)
+|Seite ist schnell sichtbar und nutzbar
+|LCP <= 2.5 s
+
+|Performance – Navigation
+|Wechsel zwischen Seiten
+|Neue Seite erscheint ohne sichtbare Haenger
+|Sichtbarer Inhalt <= 300 ms
+
+|Performance – Warenkorb Drawer
+|Klick auf Warenkorb Icon
+|Drawer oeffnet sofort und zeigt korrekte Daten
+|Reaktion <= 150 ms
+
+|Performance – Add to Cart
+|Klick auf "Add to Cart"
+|Feedback erscheint, Warenkorb wird aktualisiert
+|Feedback <= 150 ms
+
+|UX – Fehler
+|API Fehler oder Timeout
+|Klare Meldung + Retry moeglich
+|Meldung <= 1 s nach Fehler
+
+|UX – Leerer Warenkorb
+|Warenkorb ist leer
+|Leere Ansicht erklaert naechsten Schritt
+|Text + Link/CTA vorhanden
+
+|UX – Responsiv
+|Mobile oder Tablet
+|Layout bleibt bedienbar
+|Keine horizontale Scrollbar
+
+|UX – Accessibility
+|Tastatur / Screenreader Nutzung
+|Bedienung funktioniert, Fokus ist sichtbar
+|Fokus sichtbar, Labels vorhanden
+|===
