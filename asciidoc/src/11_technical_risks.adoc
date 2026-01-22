@@ -1,9 +1,4 @@
-ifndef::imagesdir[:imagesdir: ../images]
-
-[[section-technical-risks]]
-== Risks and Technical Debts
-
-=== Frontend
+=== Backend / Microservices
 
 ==== *Mögliche Probleme*
 
@@ -11,24 +6,28 @@ ifndef::imagesdir[:imagesdir: ../images]
 |===
 | Risiko | Beschreibung | Priorität
 
-| *Keine Persistenz des Warenkorbs*
-| Der Warenkorb (Pinia Store) speichert Daten nur im Memory. Bei einem Page Refresh oder Browser-Schliessung gehen alle Warenkorb Daten verloren.
-| Hoch
-
-| *Fehlende Authentifizierung*
-| Der Admin-Bereich (`/admin`) ist ohne Login zugänglich. Jeder Benutzer kann auf die Admin-Funktionen zugreifen.
+| *Keine zentrale Authentifizierung*
+| Jeder Microservice kann aktuell eigenständig angesprochen werden. Ohne zentrales Authentifizierungs- und Autorisierungskonzept besteht ein hohes Sicherheitsrisiko.
 | Kritisch
 
-| *Keine Loading States*
-| Bei zukünftigen API Calls fehlen Loading Indikatoren, was zu schlechter UX führen kann.
+| *Fehlende Service-zu-Service Absicherung*
+| Interne Kommunikation zwischen Microservices ist nicht abgesichert (z.B. kein mTLS, keine Token-Validierung).
+| Hoch
+
+| *Single Point of Failure*
+| Zentrale Komponenten (z.B. API Gateway oder Datenbank) sind nicht redundant ausgelegt und können das Gesamtsystem lahmlegen.
+| Hoch
+
+| *Fehlendes Monitoring und Logging*
+| Es existiert kein zentrales Logging oder Monitoring. Fehler in einzelnen Services sind schwer nachvollziehbar.
+| Hoch
+
+| *Keine klare Service-Grenzen*
+| Business-Logik ist teilweise redundant oder unklar zwischen Services verteilt, was Wartbarkeit und Erweiterbarkeit erschwert.
 | Mittel
 
-| *Keine Input-Validierung*
-| Benutzer Eingaben werden nicht validiert. Dies kann zu unerwarteten Fehlern führen.
-| Mittel
-
-| *Keine Unit-Tests*
-| Das Frontend hat keine automatisierten Tests. Änderungen können unbemerkt Fehler einführen.
+| *Fehlendes Circuit Breaking*
+| Bei Ausfall eines Services können abhängige Services ebenfalls blockieren oder abstürzen.
 | Mittel
 
 |===
@@ -39,20 +38,23 @@ ifndef::imagesdir[:imagesdir: ../images]
 |===
 | Risiko | Lösungsansatz
 
-| *Keine Persistenz des Warenkorbs*
-| Implementierung von `localStorage` oder `sessionStorage` für den Pinia Store mittels `pinia-plugin-persistedstate`. Alternativ: Warenkorb im Backend speichern.
+| *Keine zentrale Authentifizierung*
+| Einführung eines zentralen Auth-Services (z.B. OAuth2 / OpenID Connect). JWT-basierte Authentifizierung über API Gateway.
 
-| *Fehlende Authentifizierung*
-| JWT basierte Authentifizierung mit dem Backend. Rollenbasierte Zugriffskontrolle für Admin Bereich.
+| *Fehlende Service-zu-Service Absicherung*
+| Absicherung interner Kommunikation mittels mTLS oder signierten Service-Tokens.
 
-| *Keine Loading States*
-| Einführung von Loading Flags in den Stores. Skeleton-Loader oder Progress-Indikatoren während API Calls.
+| *Single Point of Failure*
+| Redundante Auslegung kritischer Komponenten. Einsatz von Load Balancern und Replikation.
 
-| *Keine Input-Validierung*
-| Verwendung von Vuetify's eingebauter Form-Validierung. Zusätzliche Validierung vor API Calls.
+| *Fehlendes Monitoring und Logging*
+| Zentrales Logging (z.B. ELK Stack) und Monitoring (Prometheus, Grafana). Health Checks pro Service.
 
-| *Keine Unit-Tests*
-| Einführung von Vitest für Unit-Tests. Vue Test Utils für Komponenten-Tests.
+| *Keine klare Service-Grenzen*
+| Klare Definition von Verantwortlichkeiten pro Microservice (Domain Driven Design).
+
+| *Fehlendes Circuit Breaking*
+| Einsatz von Resilience-Patterns wie Circuit Breaker, Retry und Timeout (z.B. Resilience4j).
+
 
 |===
-
