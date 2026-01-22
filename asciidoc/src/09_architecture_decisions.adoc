@@ -2,3 +2,4 @@ ifndef::imagesdir[:imagesdir: ../images]
 
 [[section-design-decisions]]
 == Architecture Decisions
+A component-based architecture was chosen for the frontend. We split the different files into different folders, such as /assets for images and styling, /components for all component files, /api for endpoint-related files, and so on.
