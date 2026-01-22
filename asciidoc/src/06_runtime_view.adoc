@@ -1,17 +1,62 @@
-ifndef::imagesdir[:imagesdir: ../images]
+=== Frontend Runtime View: User Interactions
 
-[[section-runtime-view]]
-== Runtime View
+This section describes the most important user interaction scenarios in the Vue + Vuetify frontend.
+State is managed via a Pinia cart store.
 
-=== <Runtime Scenario 1>
+==== Scenario 1: Browse catalog and add an item to cart
+
+*Trigger:* The user clicks "ADD TO CART" on a product card in the shop grid.
+
+*Main flow:*
+. `Shop.vue` renders a list/grid of products and displays each product using `Card.vue`.
+. In `Card.vue`, the user clicks the action button which emits `add-to-cart` with the selected product.
+. `Shop.vue` forwards the emitted event to its parent (`UserView.vue`).
+. `UserView.vue` forwards the event again via `$emit('add-to-cart', product)` to the `router-view`.
+. `App.vue` listens to `@add-to-cart` on `<router-view>` and calls `cart.add(product)` in the Pinia store.
+. `App.vue` opens the right-side navigation drawer to show the cart.
+
+*Result:* The cart drawer opens and the item is visible in the cart.
+
+*Relevant implementation files:*
+- `components/Card.vue`
+- `components/Shop.vue`
+- `views/UserView.vue`
+- `App.vue`
+- `stores/cart.js`
 
 
-* _<insert runtime diagram or textual description of the scenario>_
-* _<insert description of the notable aspects of the interactions between the
-building block instances depicted in this diagram.>_
+==== Scenario 2: Change quantity in the cart drawer
 
-=== <Runtime Scenario 2>
+*Trigger:* The user presses plus/minus buttons on an item inside the cart drawer.
 
-=== ...
+*Main flow:*
+. The drawer UI renders the cart content from the Pinia store (`cart.items`).
+. The cart item component emits actions like `inc` / `dec`.
+. `App.vue` (or the cart item component) calls `cart.inc(id)` or `cart.dec(id)` in the store.
+. The store updates `qty` and removes items when quantity goes to zero.
+. Computed totals (`totalCount`, `totalPrice`) update automatically and the UI re-renders.
 
-=== <Runtime Scenario n>
+*Result:* Quantities and totals update instantly without a page reload.
+
+*Relevant implementation files:*
+- `App.vue` (drawer + rendering)
+- `stores/cart.js` (inc/dec logic)
+- `components/BasketItem.vue` (UI trigger; emits inc/dec)
+
+
+==== Scenario 3: Checkout and purchase
+
+*Trigger:* The user opens checkout, selects offer allocations, and presses "Purchase".
+
+*Main flow:*
+. `Checkout.vue` reads the current `cart.items` from the Pinia store.
+. The user allocates “offers” per cart item (local reactive state in `Checkout.vue`).
+. `Checkout.vue` checks whether each cart item is “covered” (offered value >= required value).
+. The "Purchase" button is enabled only when all cart items are covered (`canPurchase` computed).
+. On purchase, `Checkout.vue` calls `cart.clear()`, resets local allocations and closes the dialog.
+
+*Result:* The cart becomes empty and the checkout dialog closes.
+
+*Relevant implementation files:*
+- `components/Checkout.vue`
+- `stores/cart.js`
