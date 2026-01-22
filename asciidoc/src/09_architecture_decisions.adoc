@@ -2,3 +2,88 @@ ifndef::imagesdir[:imagesdir: ../images]
 
 [[section-design-decisions]]
 == Architecture Decisions
+
+In diesem Abschnitt werden die wesentlichen Architekturentscheidungen dokumentiert, die
+- hohe Auswirkungen auf Qualität, Kosten oder Wartbarkeit haben,
+- nur mit großem Aufwand revidierbar sind oder
+- mit relevanten Risiken verbunden waren.
+
+Details zu lokalen Entscheidungen sind in den jeweiligen White-Box-Beschreibungen der Bausteine dokumentiert.
+
+=== AD-01: Wahl einer geschichteten Architektur
+
+**Status:** entschieden  
+**Datum:** 2025-01-10
+
+**Kontext:**  
+Das System soll langfristig wartbar, testbar und von mehreren Entwicklungsteams parallel weiterentwickelt werden.
+
+**Entscheidung:**  
+Das System wird als klassische geschichtete Architektur (Presentation, Application, Domain, Infrastructure) umgesetzt.
+
+**Begründung:**  
+- Klare Trennung von Verantwortlichkeiten  
+- Gute Testbarkeit der Domänenlogik  
+- Hohe Verständlichkeit für neue Entwickler  
+- Bewährtes Architekturmodell mit geringem Risiko
+
+**Alternativen:**  
+- Hexagonale Architektur  
+- Microservices
+
+**Konsequenzen:**  
++ Gute Wartbarkeit und klare Struktur  
+− Geringere Flexibilität als bei vollständig entkoppelten Architekturen
+
+---
+
+=== AD-02: Persistenz über relationale Datenbank
+
+**Status:** entschieden  
+**Datum:** 2025-01-12
+
+**Kontext:**  
+Es müssen Geschäftsdaten mit komplexen Beziehungen gespeichert werden.
+
+**Entscheidung:**  
+Es wird eine in Memeory Datenbank eingesetzt.
+
+**Begründung:**  
+- ACID-Eigenschaften  
+- Gute Unterstützung für komplexe Abfragen  
+- Hohe Reife und Stabilität
+
+**Alternativen:**  
+- Dokumentenbasierte NoSQL-Datenbank  
+- Key-Value-Store
+
+**Konsequenzen:**  
++ Hohe Datenkonsistenz  
+− Geringere horizontale Skalierbarkeit im Vergleich zu NoSQL
+
+---
+
+=== AD-03: Kommunikation zwischen Modulen über REST
+
+**Status:** entschieden  
+**Datum:** 2025-01-15
+
+**Kontext:**  
+Module sollen lose gekoppelt sein und perspektivisch separat deploybar bleiben.
+
+**Entscheidung:**  
+Die Kommunikation erfolgt über RESTful HTTP-APIs mit JSON.
+
+**Begründung:**  
+- Hohe Interoperabilität  
+- Weit verbreiteter Standard  
+- Gute Tool-Unterstützung
+
+**Alternativen:**  
+- Messaging (z. B. Kafka)  
+- gRPC
+
+**Konsequenzen:**  
++ Einfache Integration externer Systeme  
+− Höherer Overhead als bei binären Protokollen
+

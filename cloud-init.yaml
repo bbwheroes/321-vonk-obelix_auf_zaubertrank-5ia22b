@@ -1,12 +1,17 @@
 #cloud-config
-
-# TODO: Update image names and ports below before deploying
-
 package_update: true
 
 packages:
   - ca-certificates
   - curl
+
+users:
+  - default
+  - name: user
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPigHqCq2b6PY97MKVufWauUAB92lHBeMc9OIz3NVOYU jannis@Jannis-MacBook.lerain.net
 
 write_files:
   - path: /opt/obelix/docker-compose.yml
@@ -14,25 +19,25 @@ write_files:
     content: |
       services:
         obelix-basket:
-          image: ghcr.io/GITHUB_ORG/obelix-basket:latest
+          image: ghcr.io/bbwheroes/obelix-basket-impl:latest
           restart: unless-stopped
           ports:
-            - "8081:8080"
+            - "8082:8082"
         
         obelix-quarry:
-          image: ghcr.io/GITHUB_ORG/obelix-quarry:latest
+          image: ghcr.io/bbwheroes/obelix-quarry-impl:latest
           restart: unless-stopped
           ports:
-            - "8082:8080"
+            - "8081:8081"
         
         obelix-webshop:
-          image: ghcr.io/GITHUB_ORG/obelix-webshop:latest
+          image: ghcr.io/bbwheroes/obelix-webshop:latest
           restart: unless-stopped
           ports:
             - "8080:8080"
         
         menhir-webshop:
-          image: ghcr.io/GITHUB_ORG/menhir-webshop:latest
+          image: ghcr.io/bbwheroes/menhir-webshop:latest
           restart: unless-stopped
           ports:
             - "80:80"
@@ -70,12 +75,12 @@ write_files:
         - job_name: 'obelix-basket'
           metrics_path: /actuator/prometheus
           static_configs:
-            - targets: ['obelix-basket:8080']
+            - targets: ['obelix-basket-impl:8082']
         
         - job_name: 'obelix-quarry'
           metrics_path: /actuator/prometheus
           static_configs:
-            - targets: ['obelix-quarry:8080']
+            - targets: ['obelix-quarry-impl:8081']
         
         - job_name: 'obelix-webshop'
           metrics_path: /actuator/prometheus
@@ -84,4 +89,4 @@ write_files:
 
 runcmd:
   - curl -fsSL https://get.docker.com | sh
-  - docker compose -f /opt/obelix/docker-compose.yml up -d
+  - sudo docker compose -f /opt/obelix/docker-compose.yml up -d
