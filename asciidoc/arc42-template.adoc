@@ -12,12 +12,17 @@ include::src/config.adoc[]
 :revdate: {revdate}
 :revremark: {revremark}
 :toc-title: Table of Contents
- 
+
+//additional style for arc42 help callouts
+include::src/../../../common/styles/arc42-help-style.adoc[]
+
+
+
 include::src/about-arc42.adoc[]
- 
+
 // horizontal line
 ***
- 
+
 ifdef::arc42help[]
 [role="arc42help"]
 ****

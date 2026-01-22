@@ -3,16 +3,239 @@ ifndef::imagesdir[:imagesdir: ../images]
 [[section-context-and-scope]]
 == Context and Scope
 
+Die Obelix-Applikation ist ein verteiltes System zum Verkauf und zur Verwaltung von Hinkelsteinen. Dieses Kapitel beschreibt die Geschäfts- und technischen Kontextgrenzen sowie die Schnittstellen zu externen Systemen und Nutzern.
+
+[role="arc42help"]
+****
+.Inhalt
+Context and Scope grenzt das System von allen Kommunikationspartnern ab (Nachbarsysteme und Benutzerrollen). Es legt damit die externen Schnittstellen fest.
+
+.Motivation
+Die fachlichen und technischen Schnittstellen zu Kommunikationspartnern gehören zu den kritischsten Aspekten eines Systems. Stellen Sie sicher, dass Sie diese komplett verstanden haben.
+
+.Form
+Verschiedene Optionen:
+
+* Kontextdiagramme
+* Listen von Kommunikationspartnern mit deren Schnittstellen
+****
+
 === Business Context
 
-**<Diagram or Table>**
+[role="arc42help"]
+****
+.Inhalt
+Spezifikation *aller* Kommunikationsbeziehungen (Nutzer, IT-Systeme, ...) mit Erklärung der fachlichen Ein- und Ausgabedaten oder Schnittstellen. Optional können Sie auch fachliche Datenformate oder Protokolle der Kommunikation ergänzen.
 
-**<optionally: Explanation of external domain interfaces>**
+.Motivation
+Alle Beteiligten müssen verstehen, welche fachlichen Informationen mit der Umwelt ausgetauscht werden.
+
+.Form
+Alle Diagrammarten, die das System als Black Box darstellen und die fachlichen Schnittstellen zu den Nachbarn beschreiben.
+
+Alternativ oder ergänzend können Sie eine Tabelle verwenden. Der Titel gibt den Namen Ihres Systems wieder; die drei Spalten sind: Kommunikationsbeziehung, Eingabe, Ausgabe.
+****
+
+.Fachlicher Kontext der Obelix-Applikation
+[plantuml, business-context, svg]
+----
+@startuml
+!include <C4/C4_Context>
+
+Person(kunde, "Kunde", "Endkunde, der Hinkelsteine kaufen möchte")
+Person(admin, "Administrator", "Verwaltet das Hinkelstein-Sortiment")
+Person(dev, "Externer Entwickler", "Integriert Obelix-Services in eigene Systeme")
+
+System(obelix, "Obelix-System", "Verkaufs- und Verwaltungsplattform für Hinkelsteine")
+
+System_Ext(monitoring, "Monitoring-Stack", "Zipkin, Prometheus, Grafana")
+
+Rel(kunde, obelix, "Durchsucht Katalog, bestellt Hinkelsteine", "HTTPS/Web")
+Rel(admin, obelix, "Verwaltet Hinkelsteine (CRUD)", "HTTPS/Web")
+Rel(dev, obelix, "Integriert via API", "HTTPS/REST")
+Rel(obelix, monitoring, "Sendet Metriken und Traces", "HTTP")
+
+@enduml
+----
+
+**Erklärung der externen fachlichen Schnittstellen**
+
+[options="header",cols="1,2,2"]
+|===
+|Kommunikationspartner |Eingabe |Ausgabe
+
+|*Kunde*
+|Suchanfragen, Bestellungen, Produktauswahl
+|Produktkatalog, Hinkelsteindetails, Bestellbestätigungen
+
+|*Administrator*
+|CRUD-Operationen für Hinkelsteine (Erstellen, Bearbeiten, Löschen)
+|Verwaltungsansicht, Hinkelsteinlisten, Statusmeldungen
+
+|*Externer Entwickler*
+|API-Anfragen gemäß OpenAPI-Spezifikation
+|Strukturierte JSON-Antworten mit Hinkelsteindaten
+
+|*Monitoring-Stack*
+|Konfiguration, Dashboards
+|Metriken (Prometheus), Distributed Traces (Zipkin), Visualisierungen (Grafana)
+|===
+
+**Fachliche Besonderheiten:**
+
+* *Keine Authentisierung/Session:* Das Admin-UI verzichtet bewusst auf Authentisierung (Projektanforderung: "easy")
+* *Zentraler Produktfokus:* Alle Geschäftsprozesse drehen sich um Hinkelsteine als zentrale Handelsware
+* *Self-Service:* Kunden agieren selbstständig ohne manuelle Eingriffe
 
 === Technical Context
 
-**<Diagram or Table>**
+[role="arc42help"]
+****
+.Inhalt
+Technische Schnittstellen (Kanäle, Übertragungsmedien) zwischen dem System und seiner Umwelt. Zusätzlich eine Erklärung (*mapping*), welche Ein-/Ausgaben über welche Kanäle fließen.
 
-**<optionally: Explanation of technical interfaces>**
+.Motivation
+Viele Stakeholder treffen Architekturentscheidungen auf Basis der technischen Schnittstellen des Systems zu seinem Kontext.
 
-**<Mapping Input/Output to Channels>**
+Insbesondere Infrastruktur- oder Hardware-Entwickler entscheiden auch über diese technischen Schnittstellen.
+
+.Form
+Zum Beispiel UML Deployment-Diagramme mit den Kanälen zu Nachbarsystemen, begleitet von einer Tabelle, die Kanäle auf Ein-/Ausgaben abbildet.
+****
+
+.Technischer Kontext der Obelix-Applikation
+[plantuml, technical-context, svg]
+----
+@startuml
+!include <C4/C4_Deployment>
+
+Deployment_Node(browser, "Web Browser", "Chrome, Firefox, Safari"){
+    Container(customerui, "Customer Web UI", "React/Vue.js", "Generierter OpenAPI-Client")
+    Container(adminui, "Admin Web UI", "React/Vue.js", "Generierter OpenAPI-Client")
+}
+
+Deployment_Node(obelix_platform, "Obelix Platform", "Docker/Kubernetes"){
+    Deployment_Node(microservices, "Microservices Layer"){
+        Container(service1, "Service 1", "Spring Boot", "REST API mit OAS 3.x")
+        Container(service2, "Service 2", "Spring Boot", "REST API mit OAS 3.x")
+        Container(service3, "Service 3", "Spring Boot", "REST API mit OAS 3.x")
+    }
+    
+    Deployment_Node(gateway, "API Gateway"){
+        Container(apigw, "Gateway", "Spring Cloud Gateway", "Routing, Load Balancing")
+    }
+}
+
+Deployment_Node(monitoring_infra, "Monitoring Infrastructure"){
+    Container(zipkin, "Zipkin", "Distributed Tracing")
+    Container(prometheus, "Prometheus", "Metrics Collection")
+    Container(grafana, "Grafana", "Visualization")
+}
+
+Deployment_Node(cicd, "CI/CD Pipeline"){
+    Container(github, "GitHub Actions", "Build & Deploy")
+}
+
+Deployment_Node(prod, "BBW MaaS", "Production Environment"){
+    Container(deployment, "Production Services", "Docker Compose")
+}
+
+Rel(customerui, apigw, "HTTPS/REST", "JSON")
+Rel(adminui, apigw, "HTTPS/REST", "JSON")
+Rel(apigw, service1, "HTTP/REST", "JSON")
+Rel(apigw, service2, "HTTP/REST", "JSON")
+Rel(apigw, service3, "HTTP/REST", "JSON")
+
+Rel(service1, zipkin, "HTTP", "Spans")
+Rel(service2, zipkin, "HTTP", "Spans")
+Rel(service3, zipkin, "HTTP", "Spans")
+
+Rel(prometheus, service1, "HTTP", "Scrapes /actuator/prometheus")
+Rel(prometheus, service2, "HTTP", "Scrapes /actuator/prometheus")
+Rel(prometheus, service3, "HTTP", "Scrapes /actuator/prometheus")
+
+Rel(grafana, prometheus, "HTTP", "Queries")
+
+Rel(github, deployment, "SSH/Docker", "Automated Deployment")
+
+@enduml
+----
+
+**Erklärung der technischen Schnittstellen**
+
+[options="header",cols="1,2,2,2"]
+|===
+|Kanal/Schnittstelle |Protokoll/Format |Erklärung |Beispiel
+
+|*Web UI → API Gateway*
+|HTTPS, REST, JSON
+|Frontend kommuniziert ausschließlich über generierten OpenAPI-Client mit Backend
+|`GET /api/hinkelsteine` → `200 OK + JSON-Array`
+
+|*API Gateway → Microservices*
+|HTTP, REST, JSON
+|Internes Routing zwischen Gateway und Services, Load Balancing
+|Gateway leitet Request an verfügbaren Service weiter
+
+|*Microservices → Zipkin*
+|HTTP, JSON (Zipkin Span Format)
+|Distributed Tracing für Request-Nachverfolgung
+|Span-IDs werden durch alle Services propagiert
+
+|*Prometheus → Microservices*
+|HTTP (Scraping)
+|Prometheus ruft regelmäßig `/actuator/prometheus` Endpoint ab
+|`GET /actuator/prometheus` → Metrics im Prometheus-Format
+
+|*Grafana → Prometheus*
+|HTTP (PromQL)
+|Grafana visualisiert Metriken durch Abfrage von Prometheus
+|`rate(http_requests_total[5m])`
+
+|*GitHub Actions → BBW MaaS*
+|SSH, Docker Remote API
+|Automatisiertes Deployment nach erfolgreichem Build des main-Branch
+|`docker-compose up -d` auf Produktionsserver
+
+|===
+
+**Mapping Input/Output zu Kanälen**
+
+[options="header",cols="2,2,2"]
+|===
+|Input/Output |Kanal |Format/Protokoll
+
+|Produktsuche durch Kunde
+|Web Browser → API Gateway → Service
+|HTTPS, JSON (OpenAPI-konform)
+
+|Admin CRUD-Operation
+|Admin UI → API Gateway → Service
+|HTTPS, JSON (OpenAPI-konform)
+
+|Externe API-Integration
+|Externer Client → API Gateway → Service
+|HTTPS, REST, JSON (gemäß OAS-Spezifikation)
+
+|Tracing-Daten
+|Microservice → Zipkin
+|HTTP, JSON (Zipkin v2 API)
+
+|Metriken
+|Microservice → Prometheus (Pull)
+|HTTP, Prometheus Exposition Format
+
+|Deployment-Artefakte
+|GitHub Actions → BBW MaaS
+|Docker Images via Registry, docker-compose
+
+|===
+
+**Technische Constraints:**
+
+* *Code-First OpenAPI:* OAS wird aus Code generiert (z.B. springdoc-openapi)
+* *Generierte Clients:* Frontend nutzt ausschließlich OpenAPI-generierte Clients (z.B. openapi-generator)
+* *Microservice-Architektur:* Mindestens 3 unabhängige Services
+* *Observability:* Mandatory Integration von Zipkin (Tracing), Prometheus (Metrics), Grafana (Visualization)
+* *CI/CD:* Automatisiertes Deployment des main-Branch in Produktion
+* *Container-basiert:* Docker/docker-compose für lokale Entwicklung und Produktion
