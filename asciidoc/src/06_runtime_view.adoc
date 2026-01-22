@@ -60,3 +60,80 @@ State is managed via a Pinia cart store.
 *Relevant implementation files:*
 - `components/Checkout.vue`
 - `stores/cart.js`
+
+
+=== Backend Runtime View: API Interactions
+
+This section describes the most important runtime interaction scenarios in the backend API.
+The backend follows a REST-based architecture and exposes functionality via dedicated endpoints.
+
+==== Scenario 1: Retrieve product catalog
+
+*Trigger:* The frontend loads the shop view and requests the available products.
+
+*Main flow:*
+. The frontend sends a `GET /menhirs` request to the backend API.
+. The Menhir Controller receives the request and delegates it to the Menhir Service.
+. The Menhir Service retrieves all available menhirs from the repository.
+. The data is mapped to DTOs and returned as a JSON response.
+. The frontend renders the received product list.
+
+*Result:* The user sees the current catalog of available products.
+
+*Relevant backend components:*
+- `MenhirController`
+- `MenhirService`
+- `MenhirRepository`
+
+
+==== Scenario 2: Create basket offer
+
+*Trigger:* The user opens checkout and requests an offer calculation.
+
+*Main flow:*
+. The frontend sends a `POST /basket/offer` request with the current basket content.
+. The Basket Controller validates the request payload.
+. The Basket Service calculates required values per basket item.
+. An offer summary is returned to the frontend.
+. The frontend displays the offer allocations to the user.
+
+*Result:* The frontend receives calculated offer requirements for the basket.
+
+*Relevant backend components:*
+- `BasketController`
+- `BasketService`
+
+
+==== Scenario 3: Purchase basket
+
+*Trigger:* The user presses the "Purchase" button in the checkout dialog.
+
+*Main flow:*
+. The frontend sends a `POST /basket/buy` request with the final basket data.
+. The Basket Controller validates the request.
+. The Basket Service checks business rules and availability.
+. The purchase is processed and persisted.
+. The backend returns a success response.
+
+*Result:* The purchase is completed and confirmed by the backend.
+
+*Relevant backend components:*
+- `BasketController`
+- `BasketService`
+- `OrderRepository`
+
+
+==== Scenario 4: Leave basket
+
+*Trigger:* The user cancels checkout or clears the basket.
+
+*Main flow:*
+. The frontend sends a `POST /basket/leave` request.
+. The Basket Controller handles the request.
+. No state is persisted on the backend.
+. A confirmation response is returned.
+
+*Result:* The basket session is terminated.
+
+*Relevant backend components:*
+- `BasketController`
