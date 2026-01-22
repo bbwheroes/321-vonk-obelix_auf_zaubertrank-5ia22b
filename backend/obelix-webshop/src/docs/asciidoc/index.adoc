@@ -1,0 +1,22 @@
+= Obelix Webshop API
+:toc: left
+:toclevels: 2
+:sectlinks:
+:snippets: {snippets}
+
+== Welcome
+operation::welcome[snippets='curl-request,http-request,http-response']
+
+== Menhirs
+=== Alle Menhire
+operation::get-all-menhirs[snippets='curl-request,http-request,http-response,response-fields']
+
+== Basket
+=== Offer
+operation::basket-offer[snippets='curl-request,http-request,http-response,request-fields,response-fields']
+
+=== Buy
+operation::basket-buy[snippets='curl-request,http-request,http-response,path-parameters']
+
+=== Leave
+operation::basket-leave[snippets='curl-request,http-request,http-response']
