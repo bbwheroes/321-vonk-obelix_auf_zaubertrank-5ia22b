@@ -3,6 +3,15 @@ ifndef::imagesdir[:imagesdir: ../images]
 [[section-solution-strategy]]
 == Solution Strategy
 
+=== Frontend
+
+- At first we wanted to use React as half of our team had experience with it. But since everyone was busy with Mockups, we decided to switch to Vue.js. We learned to use it and had AI to our help.
+- As a build tool, we chose Vite, since it has cool featues like hot reload.
+- To make our code more beautiful from the beginning, we used Vuetify 3, becuase of its Pre-built Components.
+- As the State Management Technology, we used Pinia.
+- As the routing system we have `Vue Router 4`. Obvious choice. We used it for the routing between the user and admin page
+- The Material Design Icons we picked from the Material Icon Library.
+
 === CI/CD Pipeline — Context and Scope
 
 The CI/CD pipeline provides automated build and test processes for the

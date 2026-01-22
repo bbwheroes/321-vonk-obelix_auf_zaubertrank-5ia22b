@@ -3,18 +3,122 @@ ifndef::imagesdir[:imagesdir: ../images]
 [[section-concepts]]
 == Cross-cutting Concepts
 
-=== _<Concept 1>_
+=== Security & Datenschutz
 
-_<explanation>_
+* **Authentifizierung/Session:** Zugriff auf geschützte Funktionen (z. B. Checkout, Admin) nur nach Login. Session-Handling/JWT (je nach Architektur) mit klarer Gültigkeitsdauer und Logout.
+* **Autorisierung:** Rollen/Permissions (z. B. Admin vs. Kunde). Jede Server-Operation prüft Rechte serverseitig.
+* **Input-Validation:** Alle Eingaben (Forms, Query-Params, JSON) werden serverseitig validiert; Client-Validierung ist nur UX.
+* **Sichere Kommunikation:** TLS für alle Umgebungen. Keine Secrets im Repo, Konfiguration via ENV/Secret-Store.
+* **Datenschutz:** Minimalprinzip bei gespeicherten Personendaten, klare Löschkonzepte (z. B. Testdaten, Logs).
+
+=== Fehlerbehandlung & Resilienz
+
+* **Fehlerklassen:** Unterscheidung zwischen Validierungsfehlern (4xx), Auth-Fehlern (401/403) und Systemfehlern (5xx).
+* **Standard-Fehlerformat:** Einheitliche Error-Responses (Code, Message, Correlation-Id, optionale Details).
+* **Retry/Timeouts:** Externe Calls immer mit Timeout; Retries nur bei transienten Fehlern (z. B. Netzwerk, 429/503) und mit Backoff.
+* **Graceful Degradation:** UI zeigt sinnvolle Empty-States (z. B. Warenkorb leer) und bietet Wiederholen bei Netzwerkfehlern.
+
+=== Logging, Monitoring & Observability
+
+* **Strukturiertes Logging:** JSON oder klar formatierte Logs mit Level, Timestamp, Service, Request-Id/Correlation-Id.
+* **Log-Level-Regeln:** debug nur lokal, info/warn/error in Test/Prod. Keine sensitiven Daten in Logs (Passwörter, Tokens).
+* **Metriken:** Basis-Metriken wie Request-Dauer, Error-Rate, Anzahl Requests, DB-Latenzen.
+* **Tracing (optional):** Verfolgbarkeit über Services hinweg via Correlation-Id.
 
 
 
-=== _<Concept 2>_
+=== _CI/CD Pipeline Concept_
 
-_<explanation>_
+==== Motivation
 
-...
+The application consists of multiple Spring Boot–based microservices that are developed and maintained independently.
+To ensure consistent quality and reliable delivery, an automated CI/CD pipeline is required.
 
-=== _<Concept n>_
+The CI/CD pipeline addresses the following needs:
 
-_<explanation>_
+* Early detection of errors through automated testing
+* Consistent and reproducible builds for all microservices
+* Fast feedback for developers on code changes
+* Automated creation and delivery of container images
+* Centralized storage of deployment artifacts in GitHub Container Registry (GHCR)
+
+Manual testing and manual container builds would be error-prone, slow, and difficult to scale in a microservice-based architecture.
+
+---
+
+==== Solution
+
+A centralized CI/CD pipeline is implemented using GitHub Actions and defined as code within the repository.
+
+The pipeline follows a simple and clear workflow:
+
+* Source code changes are pushed to the repository
+* Automated tests are executed in the CI pipeline
+* Container images are built only if all tests pass
+* Successfully built images are pushed to GitHub Container Registry (GHCR)
+
+This ensures that only tested and verified artifacts are published and available for deployment.
+
+===== CI/CD Workflow Overview
+
+[plantuml, ci-cd-pipeline, png]
+----
+@startuml
+actor Developer
+
+Developer -> GitRepository : Push Code
+GitRepository -> CICDPipeline : Trigger Pipeline
+
+CICDPipeline -> CICDPipeline : Build & Test
+
+alt Tests successful
+    CICDPipeline -> GHCR : Build & Push Docker Image
+else Tests failed
+    CICDPipeline -> Developer : Pipeline fails\n(no deployment)
+end
+@enduml
+----
+=== Konfiguration & Secrets
+
+* **Konfigurationsquellen:** Default-Werte im Code, umgebungsspezifische Werte per ENV (z. B. API-URL, DB-URL).
+* **Secrets:** Passwörter/Keys nur in Secret-Store oder ENV (nicht im Git). Rotationsfähig.
+* **Feature-Toggles:** Optional für experimentelle Features (z. B. neue Checkout-Variante).
+
+=== API-Design & Datenformate
+
+* **REST-Konventionen:** Klare Ressourcen, saubere HTTP-Statuscodes, idempotente Methoden (PUT/DELETE), Pagination für Listen.
+* **Versionierung:** Falls nötig via URL (/api/v1) oder Header.
+* **DTOs:** Trennung zwischen internen Modellen und API-DTOs, um Breaking Changes zu vermeiden.
+* **Fehlerformat:** Einheitlich (siehe Fehlerbehandlung), damit Frontend konsistent reagieren kann.
+
+=== Persistenz & Datenkonsistenz
+
+* **Transaktionen:** Kritische Writes (z. B. Bestellung anlegen) transaktional; konsistente Zustandsübergänge.
+* **Eindeutigkeit:** Business-Keys (z. B. productNumber, orderNumber) mit DB-Constraints.
+* **Migrationen:** Schema-Änderungen über Migrationstool (z. B. Flyway/Liquibase) und reproduzierbare Setups.
+* **Testdaten:** Seed/Fixtures für lokale Entwicklung und Tests.
+
+=== Frontend-UX & Accessibility
+
+* **UI-States:** Loading/Empty/Error States für jede relevante Ansicht (Produktliste, Warenkorb, Checkout).
+* **Responsiveness:** Layout funktioniert auf Mobile/Tablet/Desktop, keine horizontalen Overflows.
+* **Accessibility Basics:** Tastaturbedienung, sinnvolle Labels/ARIA, ausreichende Kontraste, Fokus sichtbar.
+
+=== Performance
+
+* **Frontend:** Optimierte Initial-Loads (Code-Splitting/Tree-Shaking), Bilder komprimiert, Caching-Strategien.
+* **Backend:** Paging bei großen Listen, Indizes auf Filterfeldern, sinnvolle Cache-Header wo möglich.
+* **Messwerte:** Konkrete Akzeptanzkriterien werden in den Quality Requirements festgehalten (z. B. LCP, Response-Zeiten).
+
+=== Teststrategie & Quality Gates
+
+* **Unit-Tests:** Businesslogik und Utilities.
+* **Integration-Tests:** API + DB, wichtige Use-Cases (z. B. Add-to-cart, Checkout).
+* **E2E (optional):** Kritische Happy-Paths im Frontend.
+* **CI-Gates:** Linter/Formatter, Tests, Build; Merge nur bei grünen Checks.
+
+=== Build, Deployment & Versionierung
+
+* **Build reproduzierbar:** Lockfiles/Dependencies fixiert, saubere Build-Skripte.
+* **Artefakte:** Versionierte Builds (z. B. Docker Images oder dist bundle).
+* **Konventionen:** Semantische Versionen oder klarer Tagging-Standard, nachvollziehbare Changelogs.
