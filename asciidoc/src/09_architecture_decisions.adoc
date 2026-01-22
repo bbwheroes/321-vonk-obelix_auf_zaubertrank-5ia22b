@@ -43,10 +43,10 @@ Das System wird als klassische geschichtete Architektur (Presentation, Applicati
 **Datum:** 2025-01-12
 
 **Kontext:**  
-Es müssen konsistente Geschäftsdaten mit komplexen Beziehungen gespeichert werden.
+Es müssen Geschäftsdaten mit komplexen Beziehungen gespeichert werden.
 
 **Entscheidung:**  
-Es wird eine relationale Datenbank (z. B. PostgreSQL) eingesetzt.
+Es wird eine in Memeory Datenbank eingesetzt.
 
 **Begründung:**  
 - ACID-Eigenschaften  
