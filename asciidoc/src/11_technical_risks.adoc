@@ -1,60 +1,59 @@
 === Backend / Microservices
 
-==== *Mögliche Probleme*
+==== *Potential Issues*
 
 [cols="1,2,1", options="header"]
 |===
-| Risiko | Beschreibung | Priorität
+| Risk | Description | Priority
 
-| *Keine zentrale Authentifizierung*
-| Jeder Microservice kann aktuell eigenständig angesprochen werden. Ohne zentrales Authentifizierungs- und Autorisierungskonzept besteht ein hohes Sicherheitsrisiko.
-| Kritisch
+| *No Centralized Authentication*
+| Each microservice can currently be accessed independently. Without a centralized authentication and authorization concept, this poses a significant security risk.
+| Critical
 
-| *Fehlende Service-zu-Service Absicherung*
-| Interne Kommunikation zwischen Microservices ist nicht abgesichert (z.B. kein mTLS, keine Token-Validierung).
-| Hoch
+| *Missing Service-to-Service Security*
+| Internal communication between microservices is not secured (e.g. no mTLS, no token validation).
+| High
 
 | *Single Point of Failure*
-| Zentrale Komponenten (z.B. API Gateway oder Datenbank) sind nicht redundant ausgelegt und können das Gesamtsystem lahmlegen.
-| Hoch
+| Central components (e.g. API Gateway or database) are not designed redundantly and may bring down the entire system.
+| High
 
-| *Fehlendes Monitoring und Logging*
-| Es existiert kein zentrales Logging oder Monitoring. Fehler in einzelnen Services sind schwer nachvollziehbar.
-| Hoch
+| *Lack of Monitoring and Logging*
+| There is no centralized logging or monitoring. Errors in individual services are difficult to trace.
+| High
 
-| *Keine klare Service-Grenzen*
-| Business-Logik ist teilweise redundant oder unklar zwischen Services verteilt, was Wartbarkeit und Erweiterbarkeit erschwert.
-| Mittel
+| *Unclear Service Boundaries*
+| Business logic is partially redundant or not clearly separated between services, which complicates maintenance and extensibility.
+| Medium
 
-| *Fehlendes Circuit Breaking*
-| Bei Ausfall eines Services können abhängige Services ebenfalls blockieren oder abstürzen.
-| Mittel
+| *Missing Circuit Breaking*
+| When a service fails, dependent services may also become blocked or crash.
+| Medium
 
 |===
 
-==== *Lösungsansätze*
+==== *Mitigation Strategies*
 
 [cols="1,2", options="header"]
 |===
-| Risiko | Lösungsansatz
+| Risk | Mitigation Strategy
 
-| *Keine zentrale Authentifizierung*
-| Einführung eines zentralen Auth-Services (z.B. OAuth2 / OpenID Connect). JWT-basierte Authentifizierung über API Gateway.
+| *No Centralized Authentication*
+| Introduce a centralized authentication service (e.g. OAuth2 / OpenID Connect). JWT-based authentication via an API Gateway.
 
-| *Fehlende Service-zu-Service Absicherung*
-| Absicherung interner Kommunikation mittels mTLS oder signierten Service-Tokens.
+| *Missing Service-to-Service Security*
+| Secure internal communication using mTLS or signed service tokens.
 
 | *Single Point of Failure*
-| Redundante Auslegung kritischer Komponenten. Einsatz von Load Balancern und Replikation.
+| Design critical components redundantly. Use load balancers and replication.
 
-| *Fehlendes Monitoring und Logging*
-| Zentrales Logging (z.B. ELK Stack) und Monitoring (Prometheus, Grafana). Health Checks pro Service.
+| *Lack of Monitoring and Logging*
+| Centralized logging (e.g. ELK Stack) and monitoring (Prometheus, Grafana). Health checks per service.
 
-| *Keine klare Service-Grenzen*
-| Klare Definition von Verantwortlichkeiten pro Microservice (Domain Driven Design).
+| *Unclear Service Boundaries*
+| Clearly define responsibilities per microservice using Domain-Driven Design.
 
-| *Fehlendes Circuit Breaking*
-| Einsatz von Resilience-Patterns wie Circuit Breaker, Retry und Timeout (z.B. Resilience4j).
-
+| *Missing Circuit Breaking*
+| Apply resilience patterns such as circuit breakers, retries, and timeouts (e.g. Resilience4j).
 
 |===
