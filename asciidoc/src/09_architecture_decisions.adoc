@@ -3,6 +3,11 @@ ifndef::imagesdir[:imagesdir: ../images]
 [[section-design-decisions]]
 == Architecture Decisions
 
+=== Frontend
+A component-based architecture was chosen for the frontend. We split the different files into different folders, such as /assets for images and styling, /components for all component files, /api for endpoint-related files, and so on.
+
+=== Backend
+
 In diesem Abschnitt werden die wesentlichen Architekturentscheidungen dokumentiert, die
 - hohe Auswirkungen auf Qualität, Kosten oder Wartbarkeit haben,
 - nur mit großem Aufwand revidierbar sind oder
@@ -10,7 +15,7 @@ In diesem Abschnitt werden die wesentlichen Architekturentscheidungen dokumentie
 
 Details zu lokalen Entscheidungen sind in den jeweiligen White-Box-Beschreibungen der Bausteine dokumentiert.
 
-=== AD-01: Wahl einer geschichteten Architektur
+==== AD-01: Wahl einer geschichteten Architektur
 
 **Status:** entschieden  
 **Datum:** 2025-01-10
@@ -37,7 +42,7 @@ Das System wird als klassische geschichtete Architektur (Presentation, Applicati
 
 ---
 
-=== AD-02: Persistenz über relationale Datenbank
+==== AD-02: Persistenz über relationale Datenbank
 
 **Status:** entschieden  
 **Datum:** 2025-01-12
@@ -63,7 +68,7 @@ Es wird eine in Memeory Datenbank eingesetzt.
 
 ---
 
-=== AD-03: Kommunikation zwischen Modulen über REST
+==== AD-03: Kommunikation zwischen Modulen über REST
 
 **Status:** entschieden  
 **Datum:** 2025-01-15
