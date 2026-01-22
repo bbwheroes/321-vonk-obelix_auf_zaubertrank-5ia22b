@@ -1,58 +1,59 @@
-ifndef::imagesdir[:imagesdir: ../images]
+=== Backend / Microservices
 
-[[section-technical-risks]]
-== Risks and Technical Debts
-
-=== Frontend
-
-==== *Mögliche Probleme*
+==== *Potential Issues*
 
 [cols="1,2,1", options="header"]
 |===
-| Risiko | Beschreibung | Priorität
+| Risk | Description | Priority
 
-| *Keine Persistenz des Warenkorbs*
-| Der Warenkorb (Pinia Store) speichert Daten nur im Memory. Bei einem Page Refresh oder Browser-Schliessung gehen alle Warenkorb Daten verloren.
-| Hoch
+| *No Centralized Authentication*
+| Each microservice can currently be accessed independently. Without a centralized authentication and authorization concept, this poses a significant security risk.
+| Critical
 
-| *Fehlende Authentifizierung*
-| Der Admin-Bereich (`/admin`) ist ohne Login zugänglich. Jeder Benutzer kann auf die Admin-Funktionen zugreifen.
-| Kritisch
+| *Missing Service-to-Service Security*
+| Internal communication between microservices is not secured (e.g. no mTLS, no token validation).
+| High
 
-| *Keine Loading States*
-| Bei zukünftigen API Calls fehlen Loading Indikatoren, was zu schlechter UX führen kann.
-| Mittel
+| *Single Point of Failure*
+| Central components (e.g. API Gateway or database) are not designed redundantly and may bring down the entire system.
+| High
 
-| *Keine Input-Validierung*
-| Benutzer Eingaben werden nicht validiert. Dies kann zu unerwarteten Fehlern führen.
-| Mittel
+| *Lack of Monitoring and Logging*
+| There is no centralized logging or monitoring. Errors in individual services are difficult to trace.
+| High
 
-| *Keine Unit-Tests*
-| Das Frontend hat keine automatisierten Tests. Änderungen können unbemerkt Fehler einführen.
-| Mittel
+| *Unclear Service Boundaries*
+| Business logic is partially redundant or not clearly separated between services, which complicates maintenance and extensibility.
+| Medium
+
+| *Missing Circuit Breaking*
+| When a service fails, dependent services may also become blocked or crash.
+| Medium
 
 |===
 
-==== *Lösungsansätze*
+==== *Mitigation Strategies*
 
 [cols="1,2", options="header"]
 |===
-| Risiko | Lösungsansatz
+| Risk | Mitigation Strategy
 
-| *Keine Persistenz des Warenkorbs*
-| Implementierung von `localStorage` oder `sessionStorage` für den Pinia Store mittels `pinia-plugin-persistedstate`. Alternativ: Warenkorb im Backend speichern.
+| *No Centralized Authentication*
+| Introduce a centralized authentication service (e.g. OAuth2 / OpenID Connect). JWT-based authentication via an API Gateway.
 
-| *Fehlende Authentifizierung*
-| JWT basierte Authentifizierung mit dem Backend. Rollenbasierte Zugriffskontrolle für Admin Bereich.
+| *Missing Service-to-Service Security*
+| Secure internal communication using mTLS or signed service tokens.
 
-| *Keine Loading States*
-| Einführung von Loading Flags in den Stores. Skeleton-Loader oder Progress-Indikatoren während API Calls.
+| *Single Point of Failure*
+| Design critical components redundantly. Use load balancers and replication.
 
-| *Keine Input-Validierung*
-| Verwendung von Vuetify's eingebauter Form-Validierung. Zusätzliche Validierung vor API Calls.
+| *Lack of Monitoring and Logging*
+| Centralized logging (e.g. ELK Stack) and monitoring (Prometheus, Grafana). Health checks per service.
 
-| *Keine Unit-Tests*
-| Einführung von Vitest für Unit-Tests. Vue Test Utils für Komponenten-Tests.
+| *Unclear Service Boundaries*
+| Clearly define responsibilities per microservice using Domain-Driven Design.
+
+| *Missing Circuit Breaking*
+| Apply resilience patterns such as circuit breakers, retries, and timeouts (e.g. Resilience4j).
 
 |===
-
